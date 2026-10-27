@@ -1,0 +1,277 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════
+   ZARX TECHNOLOGIES — Design tokens
+   Colours are RGB channels so Tailwind can apply alpha.
+   ═══════════════════════════════════════════════════ */
+
+:root {
+  /* Surfaces & text */
+  --color-canvas: 255 255 255; /* #FFFFFF */
+  --color-subtle: 247 248 250; /* #F7F8FA */
+  --color-ink: 17 24 39; /* #111827 */
+  --color-muted: 102 112 133; /* #667085 */
+  --color-line: 229 231 235; /* #E5E7EB */
+
+  /* Accent */
+  --color-accent: 37 99 235; /* #2563EB */
+  --color-accent-hover: 29 78 216; /* #1D4ED8 */
+  --color-accent-soft: 239 244 255; /* #EFF4FF */
+
+  /* Dark feature sections */
+  --color-night: 16 24 40; /* #101828 */
+  --color-night-raised: 24 34 52; /* #182234 */
+  --color-night-fg: 249 250 251; /* #F9FAFB */
+  --color-night-muted: 152 162 179; /* #98A2B3 */
+  --color-night-accent: 132 173 255; /* #84ADFF */
+
+  /* Feedback */
+  --color-success: 21 128 61; /* #15803D */
+  --color-danger: 180 35 24; /* #B42318 */
+
+  /* Type scale */
+  --text-display: clamp(2.5rem, 1.55rem + 4.1vw, 4.5rem);
+  --text-page: clamp(2.25rem, 1.6rem + 2.9vw, 3.75rem);
+  --text-h2: clamp(2rem, 1.45rem + 2.2vw, 3.25rem);
+  --text-h3: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+
+  /* Layout */
+  --container-max: 75rem;
+  --gutter: clamp(1rem, 0.6rem + 2vw, 2rem);
+  --section-y: clamp(4.5rem, 3rem + 6vw, 8rem);
+  --header-h: 4rem;
+
+  /* Shape & depth */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --shadow-xs: 0 1px 2px rgb(16 24 40 / 0.05);
+  --shadow-sm: 0 1px 3px rgb(16 24 40 / 0.06), 0 1px 2px rgb(16 24 40 / 0.04);
+  --shadow-lg: 0 24px 48px -12px rgb(16 24 40 / 0.14), 0 4px 8px -2px rgb(16 24 40 / 0.04);
+  --shadow-focus: 0 0 0 3px rgb(37 99 235 / 0.28);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 160ms;
+  --duration-base: 240ms;
+  --duration-reveal: 700ms;
+}
+
+/* ═══════════════════════════════════════════════════
+   Base
+   ═══════════════════════════════════════════════════ */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-canvas text-ink antialiased;
+    font-feature-settings: "cv11", "ss01";
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-semibold text-balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: rgb(var(--color-accent) / 0.18);
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--color-accent));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .on-dark :focus-visible {
+    outline-color: rgb(var(--color-night-accent));
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   Components
+   ═══════════════════════════════════════════════════ */
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-container px-gutter;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-sm font-medium text-accent;
+  }
+
+  .eyebrow::before {
+    content: "";
+    @apply h-px w-5 bg-current;
+  }
+
+  .on-dark .eyebrow {
+    @apply text-night-accent;
+  }
+
+  /* Text link with animated underline */
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size var(--duration-base) var(--ease-out),
+      color var(--duration-fast) ease;
+  }
+
+  .link-underline:hover {
+    background-size: 100% 1px;
+  }
+
+  /* Form controls */
+  .field {
+    @apply block w-full rounded-sm border border-line bg-canvas px-3.5 py-3 text-[0.9375rem] text-ink shadow-xs;
+    @apply placeholder:text-muted;
+    transition: border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
+  }
+
+  .field:hover {
+    border-color: rgb(var(--color-muted) / 0.45);
+  }
+
+  .field:focus {
+    @apply border-accent shadow-focus outline-none;
+  }
+
+  .field[aria-invalid="true"] {
+    @apply border-danger;
+  }
+
+  .field[aria-invalid="true"]:focus {
+    box-shadow: 0 0 0 3px rgb(var(--color-danger) / 0.2);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   Motion
+   ═══════════════════════════════════════════════════ */
+
+/* Hero entrance — pure CSS so it never waits on JavaScript */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-rise {
+  animation: rise-in var(--duration-reveal) var(--ease-out) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* Movement only: the element is readable from the first paint, so the
+   hero's primary content never waits on an animation frame (LCP). */
+@keyframes rise-in-visible {
+  from {
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.animate-rise-visible {
+  animation: rise-in-visible var(--duration-reveal) var(--ease-out) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes fill-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.animate-fill {
+  transform-origin: left;
+  animation: fill-x 1.2s var(--ease-out) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* Scroll reveal. Content is visible by default; RevealObserver adds
+   .reveal-ready to <html> only after marking in-view elements, so there
+   is no flash and nothing is hidden without JavaScript. */
+.reveal-ready [data-reveal]:not(.is-revealed) {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+}
+
+[data-reveal] {
+  transition: opacity var(--duration-reveal) var(--ease-out),
+    transform var(--duration-reveal) var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* FAQ disclosure */
+.faq-item summary {
+  list-style: none;
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item[open] .faq-icon {
+  transform: rotate(45deg);
+}
+
+@supports (interpolate-size: allow-keywords) {
+  .faq-item {
+    interpolate-size: allow-keywords;
+  }
+
+  .faq-item::details-content {
+    height: 0;
+    overflow: clip;
+    transition: height var(--duration-base) var(--ease-out),
+      content-visibility var(--duration-base) allow-discrete;
+  }
+
+  .faq-item[open]::details-content {
+    height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  .reveal-ready [data-reveal]:not(.is-revealed) {
+    opacity: 1;
+    transform: none;
+  }
+}
