@@ -1,5 +1,5 @@
-import aniketSingh from "../../public/Aniket Singh.jpg";
-import karthikKS from "../../public/Karthik K S.jpg";
+import aniketSingh from "@/assets/aniket-singh.jpg";
+import karthikKS from "@/assets/karthik-k-s.jpg";
 
 export const leaders = [
   {

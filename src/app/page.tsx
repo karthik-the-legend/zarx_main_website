@@ -8,7 +8,7 @@ import CTABanner from "@/components/CTABanner";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { leaders } from "@/content/leaders";
 import { services } from "@/content/services";
-import { site } from "@/lib/site";
+import { absoluteUrl, site } from "@/lib/site";
 
 // Structured data limited to facts stated on the site.
 const jsonLd = {
@@ -37,7 +37,7 @@ const jsonLd = {
       })),
       makesOffer: services.map((service) => ({
         "@type": "Offer",
-        itemOffered: { "@type": "Service", name: service.title, url: `${site.url}/solutions/${service.slug}` },
+        itemOffered: { "@type": "Service", name: service.title, url: absoluteUrl(`/solutions/${service.slug}`) },
       })),
     },
     {

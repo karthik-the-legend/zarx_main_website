@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { site } from "@/lib/site";
+import { absoluteUrl, site } from "@/lib/site";
 import { pageMetadata } from "@/lib/metadata";
 import { getService, services } from "@/content/services";
 import { PageHero, type Crumb } from "@/components/ui/PageHero";
@@ -211,7 +211,7 @@ export default async function ServicePage({ params }: Props) {
               name: service.title,
               serviceType: service.short,
               description: service.intro,
-              url: `${site.url}${path}`,
+              url: absoluteUrl(path),
               provider: { "@type": "Organization", name: site.legalName, url: site.url },
               areaServed: "Worldwide",
             },

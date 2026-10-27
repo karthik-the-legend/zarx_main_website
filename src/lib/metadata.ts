@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { site } from "@/lib/site";
+import { site, withSlash } from "@/lib/site";
 
 /** Per-page metadata with its own canonical URL and social cards. */
 export function pageMetadata({
@@ -12,6 +12,7 @@ export function pageMetadata({
   path: string;
 }): Metadata {
   const fullTitle = `${title} | ${site.name}`;
+  path = withSlash(path);
   // A page-level openGraph object replaces the inherited one, so the shared
   // card image from app/opengraph-image.png has to be listed again here.
   const image = { url: "/opengraph-image.png", width: 1200, height: 630, alt: site.title };

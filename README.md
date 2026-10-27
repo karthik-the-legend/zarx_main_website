@@ -48,8 +48,8 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 ### Build for Production
 
 ```bash
-npm run build
-npm start
+npm run build   # static export to ./out (plus scripts/flatten-segment-data.mjs)
+npm start       # preview ./out locally at http://localhost:3000
 ```
 
 ## Project Structure
@@ -111,13 +111,20 @@ replace `deliver()` in `src/components/ContactForm.tsx`.
 ### Business details
 Email, location and other facts live in `src/lib/site.ts`. Page copy lives in `src/content/`; adding a service to `services.ts` creates its page, footer link, sitemap entry and contact-form topic automatically.
 
-## Deployment
+## Deployment (Hostinger)
 
-### Vercel (Recommended)
-```bash
-npm install -g vercel
-vercel
-```
+The site is a static export, so it runs on any Hostinger web-hosting plan (no Node.js needed).
+
+1. `npm run build` — writes the site to `out/`, including `.htaccess` (HTTPS, www → apex, 404 page).
+2. Zip the **contents** of `out/` (so `index.html` and `.htaccess` sit at the top of the zip).
+3. hPanel → **Websites → zarxtechnologies.com → File Manager** → open `public_html`.
+4. Delete any placeholder files there (e.g. `default.php`), upload the zip, then **Extract** it into `public_html`.
+5. hPanel → **Security → SSL**: install the free certificate for the domain.
+6. Visit https://zarxtechnologies.com and check a few pages, e.g. `/solutions/` and `/contact/`.
+
+To update the site later, rebuild and repeat steps 2–4 (replacing the old files).
+
+The domain is set in `src/lib/site.ts` (or via `NEXT_PUBLIC_SITE_URL`) and in `public/.htaccess`; change both if it ever moves.
 
 ## License
 

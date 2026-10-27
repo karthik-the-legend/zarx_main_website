@@ -1,4 +1,4 @@
-import { site } from "@/lib/site";
+import { absoluteUrl } from "@/lib/site";
 import type { Crumb } from "@/components/ui/PageHero";
 
 export function JsonLd({ data }: { data: object }) {
@@ -17,7 +17,7 @@ export function breadcrumbLd(crumbs: Crumb[], currentPath: string) {
       "@type": "ListItem",
       position: i + 1,
       name: crumb.label,
-      item: `${site.url}${crumb.href ?? currentPath}`,
+      item: absoluteUrl(crumb.href ?? currentPath),
     })),
   };
 }

@@ -13,6 +13,16 @@ export const site = {
   founder: "Aniket Singh",
 } as const;
 
+/** "/solutions" -> "/solutions/": pages are exported as folders (trailingSlash in next.config.js). */
+export function withSlash(path: string) {
+  return path.endsWith("/") ? path : `${path}/`;
+}
+
+/** Absolute URL for a page, e.g. for sitemaps and structured data. */
+export function absoluteUrl(path: string) {
+  return `${site.url}${withSlash(path)}`;
+}
+
 export const navLinks = [
   { label: "Solutions", href: "/solutions" },
   { label: "Why ZARX", href: "/why-zarx" },
