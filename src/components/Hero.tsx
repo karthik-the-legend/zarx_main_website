@@ -1,140 +1,102 @@
 import type { CSSProperties } from "react";
+import { Clock3, FileLock2, Gauge } from "lucide-react";
+import { facts } from "@/content/facts";
+import { cta, secondaryCta } from "@/lib/cta";
 import { ButtonArrow, ButtonLink } from "@/components/ui/Button";
 
-const facts = [
-  { value: "50+", label: "Projects delivered" },
-  { value: "3×", label: "Faster deployment" },
-  { value: "24h", label: "Review of new enquiries" },
-];
-
 const stages = [
-  { title: "Idea & vision mapping", detail: "Strategy, market, growth goals", status: "done" },
-  { title: "AI + human prompt engineering", detail: "Vision into executable specs", status: "done" },
-  { title: "Design & prototype", detail: "UI/UX, 3D, motion, validation", status: "active" },
-  { title: "Build & deploy", detail: "CI/CD, testing, cloud-native", status: "next" },
-  { title: "Scale & upgrade", detail: "Optimise, expand, grow", status: "next" },
-] as const;
+  { title: "Idea", detail: "Scope, users and success metrics", ai: false },
+  { title: "Design", detail: "Flows, UI and user tests", ai: true },
+  { title: "Build", detail: "Weekly sprints and live demos", ai: true },
+  { title: "Launch", detail: "Security review, release, monitoring", ai: false },
+  { title: "Scale", detail: "Analytics, new features, live ops", ai: false },
+];
 
 const delay = (ms: number) => ({ "--delay": `${ms}ms` }) as CSSProperties;
 
 export default function Hero() {
+  const secondary = secondaryCta();
+  const microProof = [
+    facts.stats.firstDemoLine && { icon: Gauge, text: facts.stats.firstDemoLine },
+    { icon: Clock3, text: "A founder replies within 1 working day" },
+    { icon: FileLock2, text: "NDA on request" },
+  ].filter(Boolean) as { icon: typeof Gauge; text: string }[];
+
   return (
     <section
       id="top"
       aria-labelledby="hero-title"
-      className="relative overflow-hidden pb-section pt-[calc(var(--header-h)+clamp(3rem,2rem+5vw,6.5rem))]"
+      className="relative overflow-hidden pb-[clamp(3.5rem,2.5rem+4vw,6rem)] pt-[calc(var(--header-h)+clamp(3rem,2rem+5vw,6rem))]"
     >
       <div className="container-page grid items-center gap-16 xl:grid-cols-12 xl:gap-12">
         <div className="xl:col-span-7">
-          <p className="eyebrow animate-rise-visible mb-6">AI-powered product engineering</p>
+          <p className="eyebrow animate-rise-visible mb-6">AI-accelerated product studio</p>
 
           <h1 id="hero-title" className="animate-rise-visible text-display" style={delay(60)}>
             From idea to reality.
             <span className="block text-muted">Built to scale.</span>
           </h1>
 
-          <p className="animate-rise-visible mt-6 max-w-[34rem] text-lead text-muted" style={delay(140)}>
-            ZARX Technologies combines AI-powered development, game-grade visuals and
-            production-ready engineering to build web, mobile, Web3 and AI products for
-            founders and future-focused businesses.
+          <p className="animate-rise-visible mt-6 max-w-[36rem] text-lead text-muted" style={delay(140)}>
+            We design, build and launch web, mobile, game, Web3 and AI products for founders and
+            growing businesses. Senior engineers lead every build; AI handles the repetitive work,
+            so you reach a working product sooner. You own every line of code.
           </p>
 
-          <div
-            className="animate-rise-visible mt-9 flex flex-col gap-3 sm:flex-row sm:items-center"
-            style={delay(220)}
-          >
-            <ButtonLink href="/contact" size="lg">
-              Build with ZARX
+          <div className="animate-rise-visible mt-9 flex flex-col gap-3 sm:flex-row sm:items-center" style={delay(220)}>
+            <ButtonLink href={cta.book.href} size="lg" data-cta="hero_book">
+              {cta.book.label}
               <ButtonArrow />
             </ButtonLink>
-            <ButtonLink href="/solutions" size="lg" variant="secondary">
-              View capabilities
+            <ButtonLink href={secondary.href} size="lg" variant="secondary" data-cta="hero_secondary">
+              {secondary.label}
             </ButtonLink>
           </div>
 
-          <dl
-            className="animate-rise mt-12 grid max-w-lg grid-cols-3 gap-6 border-t border-line pt-6"
-            style={delay(300)}
-          >
-            {facts.map((fact) => (
-              <div key={fact.label} className="flex flex-col-reverse">
-                <dt className="mt-1 text-[0.8125rem] leading-snug text-muted">{fact.label}</dt>
-                <dd className="text-2xl font-semibold tracking-tight tabular-nums sm:text-[1.75rem]">
-                  {fact.value}
-                </dd>
-              </div>
+          <ul className="animate-rise mt-9 flex flex-col gap-x-6 gap-y-2.5 text-sm text-muted sm:flex-row sm:flex-wrap" style={delay(300)}>
+            {microProof.map((item) => (
+              <li key={item.text} className="flex items-center gap-2">
+                <item.icon aria-hidden="true" className="h-4 w-4 text-accent" strokeWidth={1.75} />
+                {item.text}
+              </li>
             ))}
-          </dl>
+          </ul>
         </div>
 
-        {/* Illustrative pipeline; the Process section carries the same content accessibly. */}
+        {/* Decorative pipeline; the process section describes the same stages for assistive tech. */}
         <div className="animate-rise xl:col-span-5" style={delay(200)} aria-hidden="true">
           <div className="relative isolate mx-auto max-w-lg xl:max-w-none">
             <div className="absolute -inset-x-6 -inset-y-8 -z-10 rounded-[1.75rem] bg-subtle sm:-inset-x-8" />
             <div className="overflow-hidden rounded-lg border border-line bg-canvas shadow-lg">
               <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
-                <p className="text-sm font-medium">Build pipeline</p>
-                <span className="rounded-full border border-line px-2.5 py-0.5 text-xs text-muted">
-                  Example project
-                </span>
+                <p className="text-sm font-medium">Idea → production</p>
+                <span className="rounded-full border border-line px-2.5 py-0.5 text-xs text-muted">How a build moves</span>
               </div>
-
-              <ol className="divide-y divide-line">
+              <ol className="relative px-5 py-2">
+                <span className="absolute bottom-7 left-[2.125rem] top-7 w-px bg-line" />
+                <span
+                  className="animate-grow-y absolute bottom-7 left-[2.125rem] top-7 w-px origin-top bg-accent"
+                  style={delay(600)}
+                />
                 {stages.map((stage, i) => (
-                  <li key={stage.title} className="flex items-center gap-4 px-5 py-3.5">
+                  <li key={stage.title} className="relative flex items-center gap-4 py-3">
                     <span
-                      className={
-                        stage.status === "done"
-                          ? "flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-success/10 text-success"
-                          : stage.status === "active"
-                            ? "flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-medium text-white"
-                            : "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-line text-xs text-muted"
-                      }
+                      className="animate-pop relative flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-accent/30 bg-canvas text-xs font-medium text-accent"
+                      style={delay(600 + i * 180)}
                     >
-                      {stage.status === "done" ? (
-                        <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M3.5 8.5l3 3 6-7" />
-                        </svg>
-                      ) : (
-                        i + 1
-                      )}
+                      {i + 1}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p
-                        className={
-                          stage.status === "next"
-                            ? "truncate text-sm font-medium text-muted"
-                            : "truncate text-sm font-medium"
-                        }
-                      >
-                        {stage.title}
-                      </p>
+                      <p className="text-sm font-medium">{stage.title}</p>
                       <p className="truncate text-xs text-muted">{stage.detail}</p>
-                      {stage.status === "active" && (
-                        <div className="mt-2.5 h-1 overflow-hidden rounded-full bg-accent-soft">
-                          <div className="animate-fill h-full w-3/5 rounded-full bg-accent" style={delay(700)} />
-                        </div>
-                      )}
                     </div>
-                    <span
-                      className={
-                        stage.status === "done"
-                          ? "hidden text-xs text-success sm:block"
-                          : stage.status === "active"
-                            ? "hidden text-xs font-medium text-accent sm:block"
-                            : "hidden text-xs text-muted sm:block"
-                      }
-                    >
-                      {stage.status === "done" ? "Complete" : stage.status === "active" ? "In progress" : "Queued"}
-                    </span>
+                    {stage.ai && (
+                      <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-medium text-accent">AI-assisted</span>
+                    )}
                   </li>
                 ))}
               </ol>
-
-              <div className="flex items-center justify-between gap-4 bg-subtle px-5 py-3.5 text-xs text-muted">
-                <span>Idea → production</span>
-                <span className="tabular-nums">Stage 3 of 5</span>
-              </div>
+              <p className="bg-subtle px-5 py-3.5 text-xs text-muted">A senior engineer reviews every AI-assisted step.</p>
             </div>
           </div>
         </div>

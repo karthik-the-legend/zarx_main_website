@@ -2,15 +2,21 @@
 // structured data. Set NEXT_PUBLIC_SITE_URL to the production domain.
 export const site = {
   name: "ZARX Technologies",
+  shortName: "ZARX",
   legalName: "ZARX Technologies Pvt. Ltd.",
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://zarxtechnologies.com").replace(/\/$/, ""),
-  title: "ZARX Technologies — From Idea to Reality",
-  tagline: "Bridging Realms, Powering the Metaverse",
+  title: "ZARX | AI-Accelerated Product Studio, New Delhi",
+  /** One-line positioning from the brief. */
+  positioning:
+    "ZARX is a founder-led product studio that uses AI-assisted engineering to design, build and launch web, mobile, game, Web3 and AI products in weeks, and hands you 100% of the code and IP.",
+  /** Short promise for headers and meta. */
+  promise: "Senior product engineering, accelerated by AI.",
+  tagline: "From idea to reality. Built to scale.",
   description:
-    "AI-powered development, game-grade visuals, and production-ready engineering for founders and future-focused businesses. We build digital experiences that scale.",
+    "Founder-led studio building web, mobile, game, Web3 and AI products in weeks. Senior engineers, AI-assisted delivery, 100% IP ownership. Book a free call.",
   email: "info@zarxtechnologies.com",
   location: { city: "New Delhi", country: "India", countryCode: "IN" },
-  founder: "Aniket Singh",
+  founders: ["Aniket Singh", "Karthik K S"],
 } as const;
 
 /** "/solutions" -> "/solutions/": pages are exported as folders (trailingSlash in next.config.js). */
@@ -22,12 +28,3 @@ export function withSlash(path: string) {
 export function absoluteUrl(path: string) {
   return `${site.url}${withSlash(path)}`;
 }
-
-export const navLinks = [
-  { label: "Solutions", href: "/solutions" },
-  { label: "Why ZARX", href: "/why-zarx" },
-  { label: "Process", href: "/process" },
-  { label: "Leadership", href: "/leadership" },
-  { label: "Investors", href: "/investors" },
-  { label: "Contact", href: "/contact" },
-] as const;

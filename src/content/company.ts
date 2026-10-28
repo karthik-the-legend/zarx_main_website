@@ -1,224 +1,553 @@
 import type { LucideIcon } from "lucide-react";
 import {
-  BadgeDollarSign,
-  BrainCircuit,
+  BadgeIndianRupee,
+  Bot,
   Building2,
+  CalendarCheck,
+  ClipboardCheck,
+  Code2,
   Eye,
-  FileCheck2,
+  FileLock2,
+  FlaskConical,
   Gamepad2,
-  Globe,
+  GitBranch,
   Handshake,
+  KanbanSquare,
   KeyRound,
   Layers,
+  LifeBuoy,
   Lightbulb,
+  MessagesSquare,
   Network,
   Rocket,
-  Target,
-  TrendingUp,
+  ShieldCheck,
+  Sparkles,
+  UserCheck,
   Users,
   UsersRound,
-  Zap,
+  Video,
 } from "lucide-react";
-import { site } from "@/lib/site";
+import { facts } from "@/content/facts";
+import { withFacts } from "@/content/engagements";
 
 type Faq = { question: string; answer: string };
+const present = <T,>(items: (T | null | false)[]) => items.filter(Boolean) as T[];
 
-/* ─── Why ZARX ─────────────────────────────────────────────── */
-
-export const differentiators: {
-  icon: LucideIcon;
-  title: string;
-  summary: string;
-  detail: string;
-  benefits: string[];
-}[] = [
-  {
-    icon: BrainCircuit,
-    title: "AI-assisted development pipelines",
-    summary: "AI at every stage, from ideation to deployment — so you ship faster with fewer iterations.",
-    detail:
-      "AI is built into how we work, not bolted on. We use large language models, custom prompt engineering and AI toolchains across research, specification, design exploration, coding, testing and documentation — with experienced people reviewing every output.",
-    benefits: ["Faster iterations from idea to working software", "More of your budget spent on product, less on repetitive work"],
-  },
-  {
-    icon: Zap,
-    title: "In-house prompt engineers",
-    summary: "Specialists who turn founder vision into specifications both AI and developers can build from.",
-    detail:
-      "Our prompt engineers sit between your vision and the build. They turn conversations into precise, testable specifications that AI systems and human developers can both execute — removing ambiguity before it turns into rework.",
-    benefits: ["Fewer misunderstandings and change requests", "Specifications you can reuse with any future team"],
-  },
-  {
-    icon: Gamepad2,
-    title: "Game-industry design quality",
-    summary: "AAA game-studio thinking applied to startup products, at a fraction of the enterprise cost.",
-    detail:
-      "We bring game-studio craft — feedback loops, motion, 3D and spatial UX — to everyday products, so your app feels responsive and memorable instead of generic.",
-    benefits: ["Interfaces people enjoy coming back to", "A product that stands out in demos and pitches"],
-  },
-  {
-    icon: BadgeDollarSign,
-    title: "Cost-efficient, future-scalable",
-    summary: "Built right the first time. No throwaway MVPs.",
-    detail:
-      "Clean architecture, reusable components and documented decisions mean your MVP becomes the foundation of your product — not something you rewrite after you raise.",
-    benefits: ["Lower total cost over the life of the product", "Room to grow without starting over"],
-  },
-  {
-    icon: Users,
-    title: "Founder-first mindset",
-    summary: "We build like co-founders, not vendors.",
-    detail:
-      "We question assumptions, protect your runway, prioritise ruthlessly and tell you what we would do if it were our own money. Your outcome is the measure of our work.",
-    benefits: ["Honest advice on scope and priorities", "A partner invested in your success"],
-  },
-  {
-    icon: Lightbulb,
-    title: "IP & product thinking",
-    summary: "Defensible intellectual property, not just features.",
-    detail:
-      "We help you build an advantage competitors can't easily copy: proprietary workflows, data advantages and architecture choices that become your product's moat.",
-    benefits: ["A stronger story for investors", "Technology that compounds in value"],
-  },
-];
+/* ─── Audiences ("Who we build for") ───────────────────────────── */
 
 export const audiences: {
   icon: LucideIcon;
-  title: string;
-  description: string;
-  note: string;
-  needs: string[];
-  services: string[];
+  quote: string;
+  who: string;
+  text: string;
+  typical: string;
+  links: { label: string; href: string }[];
 }[] = [
   {
     icon: Lightbulb,
-    title: "Early-stage founders",
-    description:
-      "You have the idea but need someone who can architect, design and build an MVP that investors take seriously — without burning your pre-seed budget.",
-    note: "No tech team yet? We become your tech team.",
-    needs: ["A clickable prototype to validate the idea", "An investor-ready MVP", "A technical partner before you hire a CTO"],
-    services: ["ui-ux-design", "web-platforms", "mobile-gaming-apps"],
+    quote: "I have an idea and a deadline",
+    who: "Founders",
+    text: "Test the idea with real users before you spend your runway.",
+    typical: "Typical project: a Discovery Sprint, then an MVP Build.",
+    links: [
+      { label: "Web Platforms", href: "/services/web-platforms" },
+      { label: "UI/UX Design", href: "/services/ui-ux-design" },
+    ],
   },
   {
     icon: Rocket,
-    title: "Scaling startups",
-    description:
-      "Your product has traction. Now you need enterprise-grade architecture, performance optimisation and a design system that scales with your user base.",
-    note: "Post-seed? Let's 10× your product infrastructure.",
-    needs: ["Re-architecture for growth and performance", "A design system that keeps the product consistent", "AI features that set you apart"],
-    services: ["web-platforms", "ai-automation", "ui-ux-design"],
+    quote: "We're funded and behind on the roadmap",
+    who: "Startups",
+    text: "Add a senior squad without a six-month hiring cycle.",
+    typical: "Typical project: a Dedicated Squad on a monthly plan.",
+    links: [
+      { label: "How we work", href: "/process" },
+      { label: "Engagement models", href: "/#engagements" },
+    ],
   },
   {
-    icon: Building2,
-    title: "Mid-size businesses",
-    description:
-      "You've outgrown your basic website or app. It's time for a professional-grade digital presence that matches your ambition and market position.",
-    note: "Upgrade from basic to world-class.",
-    needs: ["A modern website that generates leads", "Customer portals and internal tools", "AI automation for manual operations"],
-    services: ["web-platforms", "ai-automation", "animation-visual-systems"],
+    icon: Bot,
+    quote: "We need AI that actually works",
+    who: "Businesses",
+    text: "Turn one costly manual workflow into a measured AI pilot.",
+    typical: "Typical project: an AI Opportunity Workshop, then a 4-week AI Pilot.",
+    links: [{ label: "AI Builders & Automation", href: "/services/ai-automation" }],
   },
   {
     icon: Gamepad2,
-    title: "Gaming & media IP builders",
-    description:
-      "Building a game, interactive experience or media product? We bring game-engine thinking, 3D interfaces and immersive UX to every pixel.",
-    note: "Let's build something players remember.",
-    needs: ["Game prototypes and launch builds", "3D worlds, characters and motion", "Web and Web3 experiences around your IP"],
-    services: ["mobile-gaming-apps", "animation-visual-systems", "web3"],
+    quote: "We're building a game or on-chain product",
+    who: "Game & Web3 teams",
+    text: "Specialists in Unity, real-time multiplayer and audit-ready smart contracts.",
+    typical: "Typical project: a Playable Prototype or a Web3 Feasibility Sprint.",
+    links: [
+      { label: "Mobile & Gaming", href: "/services/mobile-gaming" },
+      { label: "Web3 Products", href: "/services/web3" },
+    ],
   },
 ];
 
-/* ─── Process ──────────────────────────────────────────────── */
+/* ─── Home: AI, used honestly ──────────────────────────────────── */
 
-export const processSteps: {
-  title: string;
-  summary: string;
-  activities: string[];
-  outputs: string[];
-  yourRole: string;
+export const aiAccelerates = [
+  "Project scaffolding",
+  "First-draft code and tests",
+  "Design variations",
+  "Documentation",
+  "QA test cases",
+  "Data clean-up",
+];
+
+export const peopleDecide = [
+  "Architecture",
+  "Security and code review",
+  "UX decisions",
+  "Anything that touches payments, user data or production",
+];
+
+/* ─── Solutions ────────────────────────────────────────────────── */
+
+export const goals: {
+  id: string;
+  goal: string;
+  services: string[];
+  team: string;
+  timeline: string;
+  engagement: string;
 }[] = [
   {
-    title: "Idea & vision mapping",
-    summary: "We deep-dive into your vision, market position and growth goals. No wireframes yet — just strategy.",
-    activities: [
-      "Working sessions on your vision, users and business model",
-      "Market and competitor scan",
-      "Success metrics and constraints",
-      "Prioritising the first release",
-    ],
-    outputs: ["Product brief", "Prioritised feature list", "Initial roadmap and estimate"],
-    yourRole: "Share your vision, context and any existing research, and join one or two working sessions.",
+    id: "launch",
+    goal: "Launch my first product",
+    services: ["ui-ux-design", "web-platforms", "ai-automation"],
+    team: "A product designer and web engineers, led by a senior lead, with AI specialists if your product needs them.",
+    timeline: "8–12 weeks",
+    engagement: "mvp-build",
   },
   {
-    title: "AI + human prompt engineering",
-    summary: "Our prompt engineers translate your vision into executable specs using AI-assisted architecture planning.",
-    activities: [
-      "Turning the brief into detailed specifications",
-      "AI-assisted architecture planning",
-      "Technical risk review",
-      "Choosing the right technology stack",
-    ],
-    outputs: ["Functional specification", "System architecture", "Milestone plan"],
-    yourRole: "Review the specification and confirm priorities before design begins.",
+    id: "ai",
+    goal: "Add AI to a product or workflow",
+    services: ["ai-automation", "web-platforms"],
+    team: "AI engineers who design, evaluate and secure the workflow, with a web engineer for the interface.",
+    timeline: "3–4 week pilot, then scale",
+    engagement: "ai-pilot",
   },
   {
-    title: "Design & prototype",
-    summary: "UI/UX design, 3D elements, motion systems and interactive prototypes — validated before a line of code.",
-    activities: [
-      "User flows and wireframes",
-      "Visual design and design system",
-      "3D and motion where they add value",
-      "Prototype testing with real users",
-    ],
-    outputs: ["High-fidelity designs", "Interactive prototype", "Design system"],
-    yourRole: "Give feedback at each review and, if possible, introduce us to a few target users.",
+    id: "mobile",
+    goal: "Launch a mobile app or game",
+    services: ["mobile-gaming", "ui-ux-design", "animation"],
+    team: "App or Unity engineers and a game-UI designer, with an animator for store trailers.",
+    timeline: "10–16 weeks",
+    engagement: "app-mvp",
   },
   {
-    title: "Build & deploy",
-    summary: "Production-grade engineering with CI/CD, testing and cloud-native deployment. Launch-ready, not demo-ready.",
-    activities: [
-      "Development in short, reviewable cycles",
-      "Automated testing and code review",
-      "CI/CD and cloud deployment",
-      "Security and performance checks",
-    ],
-    outputs: ["Production-ready product", "Deployment pipeline", "Technical documentation"],
-    yourRole: "Join regular demos, try new features and approve each release.",
+    id: "web3",
+    goal: "Build on-chain",
+    services: ["web3", "web-platforms", "ui-ux-design"],
+    team: "Smart-contract engineers, a web engineer for the dApp and a designer for onboarding.",
+    timeline: "8–14 weeks, plus an independent audit",
+    engagement: "build-to-audit",
   },
   {
-    title: "Scale & upgrade",
-    summary: "Post-launch optimisation, feature expansion and performance scaling. We grow with you.",
-    activities: [
-      "Monitoring, analytics and performance tuning",
-      "New features driven by real user data",
-      "Infrastructure scaling",
-      "AI and automation upgrades",
-    ],
-    outputs: ["Improvement roadmap", "Regular releases", "Performance reviews"],
-    yourRole: "Share business priorities so we focus on what moves your numbers.",
+    id: "fix",
+    goal: "Fix a product users find confusing",
+    services: ["ui-ux-design"],
+    team: "A UX researcher and product designer, working with your developers.",
+    timeline: "3–6 weeks",
+    engagement: "ux-audit",
+  },
+  {
+    id: "explain",
+    goal: "Explain or sell my product visually",
+    services: ["animation"],
+    team: "A motion designer and 3D artist, with a scriptwriter for explainers.",
+    timeline: "2–6 weeks",
+    engagement: "product-explainer",
   },
 ];
 
-export const principles: { icon: LucideIcon; title: string; text: string }[] = [
+/** Comparison table rows: timeline and lead engagement per service. */
+export const serviceComparison: Record<string, { bestFor: string; timeline: string; engagement: string }> = {
+  "web-platforms": { bestFor: "SaaS, marketplaces, dashboards", timeline: "8–10 weeks (MVP)", engagement: "web-mvp" },
+  "mobile-gaming": { bestFor: "iOS, Android apps and casual games", timeline: "10–16 weeks", engagement: "app-mvp" },
+  web3: { bestFor: "Smart contracts, dApps, wallets", timeline: "8–12 weeks + audit", engagement: "build-to-audit" },
+  "ai-automation": { bestFor: "One workflow, automated and measured", timeline: "3–4 week pilot", engagement: "ai-pilot" },
+  "ui-ux-design": { bestFor: "New products and confusing ones", timeline: "1–8 weeks", engagement: "full-product-design" },
+  animation: { bestFor: "Explainers, trailers, UI motion", timeline: "1–6 weeks", engagement: "product-explainer" },
+};
+
+export const inclusions: { icon: LucideIcon; text: string }[] = [
+  { icon: UserCheck, text: "A senior lead who stays from kickoff to launch" },
+  { icon: BadgeIndianRupee, text: "A fixed quote for the agreed scope" },
+  { icon: Video, text: "A live demo every week, in your browser or on your phone" },
+  { icon: GitBranch, text: "Code in your own GitHub or GitLab from day one" },
+  { icon: FlaskConical, text: "Automated tests and a QA pass before every release" },
+  { icon: ShieldCheck, text: "Security review before launch (OWASP checklist)" },
+  { icon: FileLock2, text: "Handover docs, credentials and a recorded walkthrough" },
+  { icon: LifeBuoy, text: withFacts("{FreeFix}") },
+];
+
+/* ─── Why ZARX ─────────────────────────────────────────────────── */
+
+export const reasons: { icon: LucideIcon; title: string; claim: string; proof: string | null; forYou: string }[] = [
   {
-    icon: UsersRound,
-    title: "One accountable team",
-    text: "Strategy, design, engineering and AI under one roof — no hand-offs between agencies and no finger-pointing.",
+    icon: Sparkles,
+    title: "AI-accelerated delivery pipeline",
+    claim: "AI drafts scaffolding, tests and docs; engineers review every line.",
+    proof: facts.stats.weeksToFirstBuild
+      ? `${facts.stats.weeksToFirstBuild.value} ${facts.stats.weeksToFirstBuild.label} – ${facts.stats.weeksToFirstBuild.note}`
+      : null,
+    forYou: "A working product sooner, for less of your runway.",
   },
   {
-    icon: Eye,
-    title: "Progress you can see",
-    text: "Regular demos of working software instead of status reports, so you always know where things stand.",
+    icon: Bot,
+    title: "AI engineers on every team",
+    claim: "Specialists who design, evaluate and secure AI features – not just write prompts.",
+    proof: null,
+    forYou: "AI that works on your data, not just in a demo.",
   },
   {
-    icon: FileCheck2,
-    title: "Clear scope and milestones",
-    text: "A written plan with milestones before build starts, and early warnings if anything needs to change.",
+    icon: Gamepad2,
+    title: "Game-studio design quality",
+    claim: "We bring game-level polish – feel, feedback and motion – to every app.",
+    proof: null,
+    forYou: "Products users enjoy using and come back to.",
+  },
+  {
+    icon: Layers,
+    title: "Cost-efficiency without junior shortcuts",
+    claim: "Senior people on every build; AI absorbs the busywork.",
+    proof: null,
+    forYou: "Fixed quotes and less spent on rework.",
+  },
+  {
+    icon: Users,
+    title: "Founder-first partnership",
+    claim: "A founder joins every kickoff and every monthly review.",
+    proof: null,
+    forYou: "Someone senior who answers when it matters.",
   },
   {
     icon: KeyRound,
-    title: "You own what we build",
-    text: "Source code, designs and documentation are handed over to you, so you're never locked in.",
+    title: "Product and IP thinking",
+    claim: "We think like owners – roadmaps, metrics, defensibility – not order-takers.",
+    proof: null,
+    forYou:
+      "You own 100% of your code, designs and data. Our general-purpose internal tools are licensed to you free, forever.",
+  },
+];
+
+export const comparison = {
+  columns: ["ZARX", "Freelancers", "Large agency", "Hiring in-house"],
+  rows: [
+    { label: "Time to start", values: ["Fast: a Discovery Sprint first", "Fast", "Slower: sales and onboarding", "Slowest: months to hire"] },
+    { label: "Seniority of the people doing the work", values: ["Senior engineers on every build", "Varies person to person", "Often junior after the pitch", "Depends on who you can hire"] },
+    { label: "Design, engineering and AI under one roof", values: ["Yes", "Rarely – you coordinate several", "Yes", "Only if you hire all three"] },
+    { label: "Fixed quote", values: ["Yes, for the agreed scope", "Sometimes", "Varies", "No – salaries regardless of output"] },
+    { label: "Who owns the IP", values: ["You, on payment", "Depends on the contract", "Usually you – check the contract", "You"] },
+    { label: "Continuity if someone leaves", values: ["Person replaced; code and docs stay with you", "Risky – work can stall", "Good", "Risky – knowledge leaves with people"] },
+    { label: "Long-term control", values: ["High – you own code and accounts", "Medium", "Medium", "Highest"] },
+    { label: "Typical cost for an MVP", values: ["Mid – senior team, AI-assisted", "Lowest", "Highest", "High – salaries, hiring and tools"] },
+  ],
+};
+
+export const commitments: string[] = [
+  "A fixed quote for the agreed scope",
+  "A live demo every week",
+  "Code in your repository from day one",
+  "Full IP assignment on payment",
+  "NDA before detailed discussions, on request",
+  facts.replacementDays
+    ? `Any team member replaced within ${facts.replacementDays} working days if you ask`
+    : "Any team member replaced if you ask",
+  withFacts("{FreeFix}"),
+  "Leave anytime with a complete handover",
+];
+
+export const wontDo = [
+  "Start building before we agree what success looks like",
+  "Hide junior staff behind a senior pitch",
+  "Ship AI-written code that no engineer has reviewed",
+  "Build real-money gambling products or token schemes without a product",
+];
+
+export const principles: { icon: LucideIcon; title: string; text: string }[] = [
+  { icon: UsersRound, title: "One accountable team", text: "Strategy, design, engineering and AI under one roof – no hand-offs between agencies." },
+  { icon: Eye, title: "Progress you can see", text: "Working software every week instead of status reports." },
+  { icon: ClipboardCheck, title: "Clear scope and milestones", text: "A written plan before build starts, and early warnings if anything needs to change." },
+  { icon: KeyRound, title: "You own what we build", text: "Code, designs and documentation are yours, so you're never locked in." },
+];
+
+export const tools = [
+  "A shared Slack or WhatsApp channel",
+  "A Linear or Jira board you can open anytime",
+  "A recorded 30-minute demo every Friday",
+  "A monthly founder review of progress, risks and budget",
+];
+
+/* ─── Process ──────────────────────────────────────────────────── */
+
+export const processSteps: {
+  key: string;
+  title: string;
+  duration: string;
+  happens: string;
+  youGet: string;
+  role: string;
+  gate: string | null;
+  ai?: boolean;
+}[] = [
+  {
+    key: "discover",
+    title: "Discover",
+    duration: "1–2 weeks",
+    happens: "Workshops, user and competitor research, scope and a technical plan.",
+    youGet: "A product brief, a clickable prototype of the core flow and a fixed quote.",
+    role: "Two or three workshops, plus access to data and stakeholders.",
+    gate: "Approve the scope and quote – or walk away owning the brief and prototype.",
+  },
+  {
+    key: "design",
+    title: "Design",
+    duration: "1–3 weeks",
+    happens: "UX flows, UI design, a design system and user tests.",
+    youGet: "Tested high-fidelity designs and a build plan.",
+    role: "Review sessions, with feedback within 2 working days.",
+    gate: "Sign off the designs.",
+    ai: true,
+  },
+  {
+    key: "build",
+    title: "Build",
+    duration: "4–10 weeks",
+    happens: "1-week sprints, AI-assisted coding with engineer review, and QA.",
+    youGet: "A live demo every Friday, a staging link and a task board you can see.",
+    role: "A 30-minute weekly demo and quick answers on priorities.",
+    gate: "Feature-complete sign-off.",
+    ai: true,
+  },
+  {
+    key: "launch",
+    title: "Launch",
+    duration: "1 week",
+    happens: "Security review, performance tests, and store submission or deployment.",
+    youGet: "Your live product, monitoring, handover docs and credentials.",
+    role: "Final acceptance and launch communications.",
+    gate: "Go-live approval.",
+  },
+  {
+    key: "scale",
+    title: "Scale",
+    duration: "Ongoing",
+    happens: withFacts("{FreeFix}, then an optional retainer for analytics, new features, AI improvements and live ops."),
+    youGet: "A monthly report with metrics and a recommended roadmap.",
+    role: "Share business priorities so we focus on what moves your numbers.",
+    gate: null,
+  },
+];
+
+export const communication: { icon: LucideIcon; title: string; text: string }[] = [
+  {
+    icon: MessagesSquare,
+    title: "Shared channel",
+    text: facts.channelReplyHours
+      ? `Slack or WhatsApp, with replies within ${facts.channelReplyHours} working hours.`
+      : "Slack or WhatsApp, answered during working hours.",
+  },
+  { icon: KanbanSquare, title: "Live task board", text: "Linear or Jira, open to you anytime." },
+  { icon: Video, title: "Friday demo", text: "30 minutes, recorded, every week of the build." },
+  { icon: CalendarCheck, title: "Monthly founder review", text: "Progress, risks and budget with a ZARX founder." },
+];
+
+export const changeAndPayment: string[] = [
+  facts.paymentSplit
+    ? `A fixed quote per stage, with payments tied to milestones (${facts.paymentSplit}).`
+    : "A fixed quote per stage, with payments tied to milestones.",
+  "New ideas go into a change log with a cost and time estimate before any work starts.",
+  "You can swap features of equal size at no extra cost.",
+];
+
+export const qualityGates = [
+  "Code review on every change",
+  "Automated tests on core flows",
+  "Accessibility check",
+  "Security review (OWASP)",
+  "Performance budget (Core Web Vitals)",
+  "Client acceptance",
+];
+
+export const needsFromYou = [
+  "One decision-maker",
+  "Brand assets and content",
+  "Access to accounts and data",
+  "Timely feedback – within 2 working days",
+];
+
+/* ─── Leadership ───────────────────────────────────────────────── */
+
+export const values: { title: string; text: string }[] = [
+  { title: "Ownership", text: withFacts("We ship it, we fix it: {freeFix} on everything we deliver.") },
+  { title: "Candour", text: "We tell you early when something is off track, with a plan to fix it." },
+  { title: "Craft", text: "Game-studio polish in every product: feel, feedback and motion." },
+  { title: "Founder-first", text: "A founder joins every kickoff and every monthly review." },
+];
+
+/* ─── Investors & Partners ─────────────────────────────────────── */
+
+export const thesis: { title: string; text: string }[] = [
+  { title: "Services pay the bills", text: "Client projects fund operations from day one." },
+  {
+    title: "The pipeline gets faster",
+    text: "Each project adds reusable tools, templates and AI workflows, so delivery time and cost keep falling.",
+  },
+  {
+    title: "Our own products",
+    text: "We use the same pipeline to build ZARX-owned products in games and AI.",
+  },
+];
+
+export const marketFacts: { stat: string; text: string; source: string }[] = [
+  {
+    stat: "40%",
+    text: "of enterprise apps are expected to include task-specific AI agents by 2026, up from under 5% in 2025.",
+    source: "Gartner, via Process Excellence Network",
+  },
+  {
+    stat: "~30%",
+    text: "of enterprise application software revenue – over $450 billion – could come from agentic AI by 2035, up from 2% in 2025.",
+    source: "Gartner, via Process Excellence Network",
+  },
+];
+
+export const partnerWays: { icon: LucideIcon; title: string; forWho: string; youGet: string; weGet: string; cta: string }[] = [
+  {
+    icon: Handshake,
+    title: "Referral partners",
+    forWho: "Agencies, consultants and accelerators",
+    youGet: "A referral fee on the first-year value of projects you introduce, paid when the client pays.",
+    weGet: "Introductions to founders who need a senior product team.",
+    cta: "Become a referral partner",
+  },
+  {
+    icon: Network,
+    title: "Technology partners",
+    forWho: "Cloud, AI, Web3 and game-engine companies",
+    youGet: "Joint solutions, case studies and co-marketing.",
+    weGet: "Early access and deeper expertise in your platform.",
+    cta: "Talk about a technology partnership",
+  },
+  {
+    icon: Code2,
+    title: "White-label delivery",
+    forWho: "Agencies without in-house engineering",
+    youGet: "We build; you keep the client relationship, under NDA.",
+    weGet: "Steady, well-scoped project work.",
+    cta: "Discuss white-label work",
+  },
+  {
+    icon: Building2,
+    title: "Co-build / venture studio",
+    forWho: "Founders with deep domain expertise",
+    youGet: "A product team that shares the build risk, on terms agreed case by case.",
+    weGet: "A stake in products we believe in.",
+    cta: "Pitch a co-build",
+  },
+];
+
+export const clarityLine =
+  "Client deliverables always belong to the client. ZARX's IP is its general-purpose tooling and its own products – never a client's code, designs or data.";
+
+export const investorDisclaimer =
+  "This page is for information only. It is not an offer or invitation to subscribe to or purchase securities of ZARX Technologies Pvt. Ltd. Any investment will be made only through a private placement in line with the Companies Act, 2013.";
+
+export const governance = present([
+  "Registered private limited company",
+  "Statutory filings up to date",
+  "Founder contacts on the Leadership page",
+]);
+
+/* ─── FAQs ─────────────────────────────────────────────────────── */
+
+export const homeFaqs: Faq[] = [
+  {
+    question: "How much does it cost to build an MVP with ZARX?",
+    answer:
+      "It depends on what the first version must do: user roles, platforms, integrations and AI features. Most clients start with a 1–2 week Discovery Sprint that ends with a clickable prototype and a fixed quote for the build. You only commit to the build after seeing the plan and the price, and the quote stays fixed for the agreed scope.",
+  },
+  {
+    question: "How long until I see a working product?",
+    answer:
+      "You see working software every week. After a 1–2 week Discovery Sprint and 1–3 weeks of design, the build runs in one-week sprints with a live demo every Friday, so the first clickable screens arrive within days of the build starting. A typical MVP is live in 6–10 weeks, depending on scope.",
+  },
+  {
+    question: "Who owns the code and IP?",
+    answer:
+      "You do. On payment, the intellectual property in everything we create for you – code, designs, content and data – is assigned to your company. Code lives in your own GitHub or GitLab from day one, and accounts are opened in your name. Only our general-purpose internal tools stay ours, and they're licensed to you free, forever.",
+  },
+  {
+    question: "Will you sign an NDA before we talk details?",
+    answer:
+      "Yes. If you'd like an NDA before sharing details, tick the box on our brief form or ask on the first call, and we'll send one for signature. You're also welcome to send your own. Nothing you share is used for anything other than understanding and estimating your project.",
+  },
+  {
+    question: "Do you work with clients outside India, and in which time zones?",
+    answer:
+      "Yes. We're based in New Delhi (IST, UTC+5:30) and work with founders in India and abroad. We schedule the weekly demo and monthly review in a window that overlaps your working day, keep a shared channel for quick questions, and record every demo so nobody has to join at an unreasonable hour.",
+  },
+  {
+    question: "What happens after launch?",
+    answer: withFacts(
+      "Every build includes {freeFix} for bugs in what we delivered. After that you choose: an optional monthly retainer for monitoring, analytics, new features and AI improvements, or a clean handover to your own team with documentation, credentials and a recorded walkthrough. Either way, you get a recommended roadmap based on real usage."
+    ),
+  },
+];
+
+export const solutionsFaqs: Faq[] = [
+  {
+    question: "Can I hire you for just one service?",
+    answer:
+      "Yes. Many clients start with a single service – a UX audit, an AI pilot or a product explainer – and add others later if it makes sense. We'll tell you honestly when another discipline would help, but you're never required to buy a bundle. Each service has its own entry engagement with a fixed scope.",
+  },
+  {
+    question: "Do I need a technical co-founder to work with you?",
+    answer:
+      "No. We work with many non-technical founders. A senior lead translates your goals into a technical plan, explains trade-offs in plain language and keeps you in control of decisions. You'll need one person who can make product decisions and give feedback quickly; you don't need to read code to work with us.",
+  },
+  {
+    question: "Can you take over a product another team started?",
+    answer:
+      "Yes. We start with a short audit of the code, design, security and performance, so we both know what we're taking on. The audit ends with a written report and a prioritised plan: fix in place, rebuild in stages, or a mix. We only recommend a rewrite when it's cheaper than repairing what you have.",
+  },
+  {
+    question: "How do you price projects that mix several services?",
+    answer:
+      "As one project with one fixed quote, not separate bills per service. The Discovery Sprint defines what each discipline contributes and when, and the quote covers the agreed scope across all of them. You get one senior lead and one weekly demo, whatever the mix of design, engineering, AI and animation.",
+  },
+  {
+    question: "What do you need from me to get started?",
+    answer:
+      "A short brief about what you're building and who it's for, any material you already have – brand, research, designs or code – and one person who can make decisions. Send the brief through our form or book a call. A founder replies within one working day with next steps, a rough timeline and a budget range.",
+  },
+];
+
+export const whyFaqs: Faq[] = [
+  {
+    question: "Why should we trust a newer studio?",
+    answer:
+      "Because you take very little risk to find out. Every project starts with a short Discovery Sprint that ends with a prototype and a fixed quote, and you can walk away owning both. After that you see working software every week. Founders lead every engagement, the commitments on this page go into your contract, and you own the code from day one.",
+  },
+  {
+    question: "How do you keep quality high with AI?",
+    answer:
+      "AI drafts; engineers decide. AI handles scaffolding, first-draft code, tests and documentation, and every line it writes is reviewed by a ZARX engineer before it ships. Architecture, security, UX and anything touching payments or user data stay with senior people. Automated tests, code review and a security check gate every release.",
+  },
+  {
+    question: "Who will actually work on our project?",
+    answer:
+      "The senior lead you meet before you sign stays from kickoff to launch, supported by engineers and designers matched to your product. You'll know everyone's name and role, see their work in the weekly demo and on the task board, and a founder joins every kickoff and monthly review. If someone isn't working out, ask and we'll replace them.",
+  },
+  {
+    question: "What if we're unhappy?",
+    answer:
+      "Tell us early – in the weekly demo, the shared channel or directly to a founder – and we'll agree a fix and a date. Because work is split into stages with sign-off gates, problems surface quickly and cost little to correct. If you decide to leave, you get a complete handover: code, designs, credentials and documentation.",
   },
 ];
 
@@ -226,123 +555,80 @@ export const processFaqs: Faq[] = [
   {
     question: "How long does a typical project take?",
     answer:
-      "Every project is different. After discovery you receive a written plan with milestones and dates, so you know when to expect each stage.",
+      "Most MVPs take 8–14 weeks end to end: 1–2 weeks of discovery, 1–3 weeks of design, 4–10 weeks of build and a launch week. AI pilots take 3–4 weeks; audits and design sprints one to three. After discovery you get a written plan with dates for each stage, and the weekly demo shows whether you're on track.",
   },
   {
     question: "What do you need from us to get started?",
     answer:
-      "Your goals, any existing material — brand, research, designs or code — and one person who can make decisions and give feedback quickly.",
+      "One person who can make decisions, your brand assets and any existing content, access to the accounts and data the project needs, and feedback within two working days during design and build. That's it. If you don't have brand assets or research yet, we can help create them as part of discovery.",
   },
   {
     question: "What if our requirements change mid-project?",
     answer:
-      "They often do. We review the change with you, explain its impact on scope, cost and timeline, and only proceed once you agree.",
+      "Change is normal. New ideas go into a change log with a cost and time estimate before any work starts, so you decide with the numbers in front of you. You can also swap a planned feature for a new one of equal size at no extra cost. Nothing outside the agreed scope is billed without your written approval.",
   },
   {
     question: "Do you offer support after launch?",
+    answer: withFacts(
+      "Yes. Every build includes {freeFix} for bugs in what we delivered. After that you can choose an optional monthly retainer covering monitoring, analytics, new features, AI improvements or live ops, with a monthly metrics report – or take everything in-house with our handover documentation and recorded walkthrough."
+    ),
+  },
+  {
+    question: "What if we need to pause?",
     answer:
-      "Yes. Scale & upgrade is part of our process — monitoring, improvements and new features — or a clean handover to your own team.",
+      "You can pause at the end of any sprint. We'll write down where things stand, merge and document the work so far, and agree a restart date. Because code lives in your repository and stages are paid by milestone, pausing doesn't strand your work or your money. Restarting may need a short ramp-up depending on how long the pause lasts.",
+  },
+  {
+    question: "Can we bring our own developers?",
+    answer:
+      "Yes. Your developers can join our sprints, review our pull requests and take over parts of the build. We agree who owns what at kickoff, use your repository and tools, and keep the weekly demo for everyone. Many clients use this to hand the product over gradually to an in-house team.",
+  },
+  {
+    question: "How do milestone payments work?",
+    answer:
+      "Each stage has a fixed quote, and payments are tied to milestones you can verify – usually an advance to start, a payment at a mid-build demo and the rest at launch acceptance. The exact split is agreed in your proposal. You never pay for a stage before you've approved the previous one.",
+  },
+  {
+    question: "What if the project runs late?",
+    answer:
+      "You'll know early, because the weekly demo and task board show progress against the plan. If we're slipping, we say so straight away with the reason and options: adjust scope, add capacity or move the date. Delays caused by our own estimates don't cost you extra; changes you request are handled through the change log.",
   },
 ];
 
-/* ─── General FAQ (contact page) ───────────────────────────── */
-
-export const faqs: Faq[] = [
+export const contactFaqs: Faq[] = [
   {
-    question: "What does ZARX Technologies build?",
+    question: "Is the first call really free, and what will we cover?",
     answer:
-      "Web platforms and high-performance websites, mobile and gaming apps, Web3 products, custom AI builders and automation systems, 2D and 3D UI/UX design, and 2D and 3D animation and visual systems.",
+      "Yes, it's free and there's no obligation. In 30 minutes we'll understand what you're building, who it's for and what success looks like, ask about timeline and budget, and tell you honestly whether we're a good fit. If we are, we suggest a first step – usually a Discovery Sprint – with a rough timeline and budget range.",
   },
   {
-    question: "Who do you work with?",
+    question: "What should I prepare before the call?",
     answer:
-      "Early-stage founders, scaling startups, mid-size businesses and gaming and media IP builders — from pre-seed to post-Series A.",
-  },
-  {
-    question: "I don't have a tech team. Can you still help?",
-    answer:
-      "Yes. If you have zero tech team, we become your tech team — architecting, designing and building an MVP that investors take seriously.",
-  },
-  {
-    question: "Can you work alongside our existing team?",
-    answer:
-      "Yes. We can lead a build end to end, or work with your in-house designers and developers on a specific product or feature.",
+      "Nothing formal – no pitch deck needed. It helps to know who the product is for, the problem it solves, any deadline you're working to and a rough budget range. If you already have designs, a prototype, research or code, have a link ready. Bring anyone who will make decisions on the project.",
   },
   {
     question: "Will you sign an NDA?",
-    answer: "Yes. We're happy to sign a non-disclosure agreement before you share confidential details.",
-  },
-  {
-    question: "What happens after I send an enquiry?",
     answer:
-      "We review your project within 24 hours, a senior team member reaches out for discovery, and you receive a tailored roadmap and proposal.",
+      "Yes. Tick the NDA box on the brief form, or ask on the call, and we'll send one for signature before you share details. You can also send your own. We treat everything you share as confidential and use it only to understand and estimate your project.",
   },
   {
-    question: "Where is ZARX based?",
-    answer: `ZARX Technologies is headquartered in ${site.location.city}, ${site.location.country}, and works with founders worldwide.`,
-  },
-];
-
-/* ─── Investors & partners ─────────────────────────────────── */
-
-export const pillars: { icon: LucideIcon; title: string; summary: string; detail: string }[] = [
-  {
-    icon: Target,
-    title: "IP-first technology company",
-    summary: "Proprietary systems, reusable frameworks and IP that compound with every project.",
-    detail:
-      "ZARX doesn't build for others and move on. Every engagement strengthens a library of proprietary systems, frameworks and workflows that make the next product faster and better.",
+    question: "How accurate is the 24-hour ballpark estimate?",
+    answer:
+      "It's a range, not a quote. Based on your brief, we compare your project with similar builds and give you a likely timeline and budget band, so you can decide whether to go further. The fixed quote comes after a Discovery Sprint, once scope is clear. If the ballpark changes a lot after discovery, we'll explain exactly why.",
   },
   {
-    icon: Layers,
-    title: "Scalable technology stack",
-    summary: "Cloud-native architecture from the first thousand users to millions.",
-    detail:
-      "Products run on proven, cloud-native architecture designed to scale without re-engineering — reducing risk for clients and increasing the reuse value of what we build.",
+    question: "Do you work with clients outside India? Which time zones?",
+    answer:
+      "Yes. We're based in New Delhi (IST, UTC+5:30) and work with founders in India and abroad. We schedule demos and reviews in a window that overlaps your working day, record every demo, and use a shared channel for quick questions, so different time zones don't slow the project down.",
   },
   {
-    icon: Globe,
-    title: "Global ambition, Indian roots",
-    summary: "India's engineering talent, global product standards.",
-    detail:
-      "Headquartered in New Delhi with a vision to serve founders worldwide, ZARX combines deep engineering talent with the product and design standards of global markets.",
+    question: "What's the smallest project you take on?",
+    answer:
+      "Our smallest engagements are focused sprints: a 2-day AI Opportunity Workshop, a one-week Rescue Audit of an existing web product, a 1–2 week UX Audit or a 1–2 week UI Motion Pack. They're a low-risk way to work together, and each ends with something useful you keep whether or not you continue.",
   },
   {
-    icon: TrendingUp,
-    title: "Compounding growth engine",
-    summary: "AI-assisted pipelines that get faster and smarter with every project.",
-    detail:
-      "Each project improves our prompts, components and pipelines. Capability grows on a curve rather than in a straight line tied to headcount.",
+    question: "How do payments work – INR and international?",
+    answer:
+      "Indian clients are invoiced in INR, with GST where it applies. International clients can pay in USD by international bank transfer. Payments are tied to milestones agreed in the quote, so you always pay for work you've seen. Exact terms are set out in your proposal before anything starts.",
   },
-];
-
-export const flywheel: { title: string; text: string }[] = [
-  {
-    title: "Client products",
-    text: "We design and engineer products for founders and businesses across web, mobile, AI, Web3 and 3D.",
-  },
-  {
-    title: "Reusable systems",
-    text: "Each build refines our AI pipelines, components and frameworks — making every next project faster.",
-  },
-  {
-    title: "Proprietary IP",
-    text: "That compounding base powers ZARX's own products and gaming IP, building long-term enterprise value.",
-  },
-];
-
-export const partnerships: { icon: LucideIcon; title: string; text: string }[] = [
-  { icon: TrendingUp, title: "Strategic investment", text: "Back an IP-first technology company built to compound." },
-  { icon: Network, title: "Technology partnerships", text: "Integrate platforms, tools or infrastructure into what we build." },
-  { icon: Handshake, title: "Co-development & IP", text: "Build products or gaming IP together, with shared upside." },
-  { icon: Users, title: "Referral partners", text: "Introduce founders who need a product team you can vouch for." },
-];
-
-/* ─── Leadership ───────────────────────────────────────────── */
-
-export const values: { title: string; text: string }[] = [
-  { title: "Founder-first", text: "We judge our work by your outcome, not by hours billed." },
-  { title: "Built right the first time", text: "Every shortcut today is a rewrite tomorrow. We'd rather get it right." },
-  { title: "IP compounds", text: "What we learn on every project makes the next one faster and better." },
-  { title: "Craft matters", text: "The details users feel — speed, motion, clarity — are the product." },
 ];

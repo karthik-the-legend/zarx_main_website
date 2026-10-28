@@ -1,19 +1,23 @@
-import Link from "next/link";
+import type { CSSProperties } from "react";
+import { DoorOpen, Sparkles } from "lucide-react";
 import { pageMetadata } from "@/lib/metadata";
-import { processFaqs, processSteps } from "@/content/company";
+import { cta } from "@/lib/cta";
+import { changeAndPayment, communication, needsFromYou, processFaqs, processSteps, qualityGates } from "@/content/company";
 import { PageHero, type Crumb } from "@/components/ui/PageHero";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { ButtonArrow, ButtonLink } from "@/components/ui/Button";
-import { CheckList, FaqList } from "@/components/ui/Lists";
+import { CheckList } from "@/components/ui/Lists";
 import { ProcessStrip } from "@/components/ui/ProcessStrip";
-import { JsonLd, breadcrumbLd, faqLd } from "@/components/ui/JsonLd";
+import { JsonLd, breadcrumbLd } from "@/components/ui/JsonLd";
+import { FaqSection } from "@/components/FaqSection";
 import CTABanner from "@/components/CTABanner";
 
 export const metadata = pageMetadata({
-  title: "Our Process",
+  title: "How We Work: From Idea to Launch in 5 Stages | ZARX",
   description:
-    "How ZARX Technologies takes products from idea to launch: vision mapping, AI + human prompt engineering, design and prototype, build and deploy, then scale and upgrade.",
+    "Discover, Design, Build, Launch, Scale – with weekly demos, fixed quotes and a go/no-go decision at every stage. See exactly how we work.",
   path: "/process",
+  image: "/og/process.png",
 });
 
 const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Process" }];
@@ -23,108 +27,117 @@ export default function ProcessPage() {
     <>
       <PageHero
         crumbs={crumbs}
-        eyebrow="How it works"
-        title="A clear path from idea to launch — and beyond."
-        lead="A proven five-stage pipeline that turns ambiguous ideas into production-ready products. AI accelerates every stage; experienced people make every decision."
+        eyebrow="Our process"
+        title="No black boxes. A demo every week."
+        lead="Every project follows the same five stages, with a decision point at the end of each one – so you only commit to the next step when you've seen the last."
       >
-        <ButtonLink href="/contact" size="lg">
-          Start a project
+        <ButtonLink href={cta.book.href} size="lg" data-cta="process_book">
+          {cta.book.label}
           <ButtonArrow />
         </ButtonLink>
-        <ButtonLink href="/solutions" size="lg" variant="secondary">
-          Explore solutions
+        <ButtonLink href={cta.estimate.href} size="lg" variant="secondary" data-cta="process_estimate">
+          Get a ballpark estimate
         </ButtonLink>
       </PageHero>
 
-      {/* Overview */}
       <Section tone="dark" labelledBy="overview-title">
-        <SectionHeading
-          id="overview-title"
-          tone="dark"
-          eyebrow="At a glance"
-          title="Five stages. No surprises."
-          description="Each stage ends with something you can see and approve before we move on."
-        />
+        <SectionHeading id="overview-title" tone="dark" eyebrow="At a glance" title="Five stages, five decisions" />
         <ProcessStrip tone="dark" />
       </Section>
 
-      {/* Stages in detail */}
       <Section labelledBy="stages-title">
         <SectionHeading
           id="stages-title"
-          eyebrow="In detail"
-          title="What happens at each stage."
-          description="What we do, what you receive and where your input matters most."
+          eyebrow="Stage by stage"
+          title="What happens, what you get, what we need"
+          description="Each stage ends with a decision gate. You never pay for a stage before approving the one before it."
         />
         <ol>
           {processSteps.map((step, i) => (
-            <li
-              key={step.title}
-              data-reveal
-              className="grid gap-8 border-t border-line py-10 lg:grid-cols-12 lg:gap-12 lg:py-14"
-            >
+            <li key={step.key} data-reveal className="grid gap-8 border-t border-line py-10 lg:grid-cols-12 lg:gap-12 lg:py-12">
               <div className="lg:col-span-4">
-                <span className="text-5xl font-semibold tabular-nums tracking-tight text-muted">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="mt-4 text-xl font-semibold tracking-tight sm:text-2xl">{step.title}</h3>
-                <p className="mt-2 text-[0.9375rem] leading-relaxed text-muted">{step.summary}</p>
+                <p className="text-sm font-medium text-accent">
+                  {String(i + 1).padStart(2, "0")} · {step.duration}
+                </p>
+                <h3 className="mt-2 flex flex-wrap items-center gap-3 text-2xl font-semibold tracking-tight">
+                  {step.title}
+                  {step.ai && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-medium text-accent">
+                      <Sparkles aria-hidden="true" className="h-3 w-3" /> AI-assisted
+                    </span>
+                  )}
+                </h3>
               </div>
-              <div className="grid gap-8 sm:grid-cols-2 lg:col-span-8 lg:grid-cols-3">
+              <dl className="grid gap-6 sm:grid-cols-2 lg:col-span-8 lg:grid-cols-3">
                 <div>
-                  <h4 className="text-sm font-semibold">What happens</h4>
-                  <ul className="mt-3 space-y-2.5">
-                    {step.activities.map((activity) => (
-                      <li key={activity} className="text-[0.9375rem] leading-relaxed text-muted">
-                        {activity}
-                      </li>
-                    ))}
-                  </ul>
+                  <dt className="text-sm font-semibold">What happens</dt>
+                  <dd className="mt-2 text-[0.9375rem] leading-relaxed text-muted">{step.happens}</dd>
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold">What you get</h4>
-                  <CheckList items={step.outputs} className="mt-3" />
+                  <dt className="text-sm font-semibold">What you get</dt>
+                  <dd className="mt-2 text-[0.9375rem] leading-relaxed text-muted">{step.youGet}</dd>
                 </div>
-                <div className="rounded-md bg-subtle p-5 sm:col-span-2 lg:col-span-1">
-                  <h4 className="text-sm font-semibold">Your role</h4>
-                  <p className="mt-3 text-[0.9375rem] leading-relaxed text-muted">{step.yourRole}</p>
+                <div>
+                  <dt className="text-sm font-semibold">Your role</dt>
+                  <dd className="mt-2 text-[0.9375rem] leading-relaxed text-muted">{step.role}</dd>
                 </div>
-              </div>
+                {step.gate && (
+                  <div className="flex gap-3 rounded-md bg-subtle p-4 sm:col-span-2 lg:col-span-3">
+                    <DoorOpen aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-accent" strokeWidth={1.75} />
+                    <div>
+                      <dt className="text-sm font-semibold">Decision gate</dt>
+                      <dd className="mt-1 text-[0.9375rem]">{step.gate}</dd>
+                    </div>
+                  </div>
+                )}
+              </dl>
             </li>
           ))}
         </ol>
       </Section>
 
-      {/* FAQ */}
-      <Section tone="subtle" labelledBy="faq-title">
-        <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
-          <header data-reveal className="lg:col-span-4">
-            <p className="eyebrow mb-4">FAQ</p>
-            <h2 id="faq-title" className="text-h2">
-              Working with us.
-            </h2>
-            <p className="mt-5 text-lead text-muted">
-              More questions?{" "}
-              <Link href="/contact#faq" className="link-underline text-ink">
-                See all FAQs
-              </Link>
-              .
-            </p>
-          </header>
-          <FaqList items={processFaqs} className="lg:col-span-8" />
+      <Section tone="subtle" labelledBy="comms-title">
+        <SectionHeading id="comms-title" eyebrow="Communication" title="You'll always know where things stand" />
+        <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {communication.map((c, i) => (
+            <li key={c.title} data-reveal style={{ "--reveal-delay": `${i * 70}ms` } as CSSProperties} className="rounded-lg border border-line bg-canvas p-6">
+              <c.icon aria-hidden="true" className="h-5 w-5 text-accent" strokeWidth={1.75} />
+              <h3 className="mt-4 text-h3">{c.title}</h3>
+              <p className="mt-2 text-[0.9375rem] leading-relaxed text-muted">{c.text}</p>
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      <Section labelledBy="change-title">
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+          <div data-reveal>
+            <p className="eyebrow mb-4">Change and payment</p>
+            <h2 id="change-title" className="text-h2">Change is normal. Surprise invoices aren&apos;t.</h2>
+            <CheckList items={changeAndPayment} className="mt-8" />
+          </div>
+          <div data-reveal>
+            <p className="eyebrow mb-4">Quality gates</p>
+            <h2 className="text-h2">Nothing ships without passing these</h2>
+            <CheckList items={qualityGates} className="mt-8 grid gap-x-8 gap-y-3 space-y-0 sm:grid-cols-2" />
+          </div>
         </div>
       </Section>
 
-      <CTABanner
-        title="Start with a conversation."
-        text="Stage one begins with understanding your vision. Tell us about it, and we'll show you what the path from idea to launch could look like."
-        primary={{ label: "Start a project", href: "/contact" }}
-        secondary={{ label: "Why ZARX", href: "/why-zarx" }}
-      />
+      <Section tone="subtle" labelledBy="needs-title">
+        <SectionHeading id="needs-title" eyebrow="Your side" title="What we need from you" align="start" />
+        <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {needsFromYou.map((n, i) => (
+            <li key={n} data-reveal style={{ "--reveal-delay": `${i * 70}ms` } as CSSProperties} className="border-t border-ink/15 pt-5 text-[1.0625rem] font-medium">
+              {n}
+            </li>
+          ))}
+        </ul>
+      </Section>
 
-      <JsonLd
-        data={{ "@context": "https://schema.org", "@graph": [breadcrumbLd(crumbs, "/process"), faqLd(processFaqs)] }}
-      />
+      <FaqSection items={processFaqs} />
+      <CTABanner headline="Start with a Discovery Sprint. Decide with a prototype in hand." />
+      <JsonLd data={{ "@context": "https://schema.org", ...breadcrumbLd(crumbs, "/process") }} />
     </>
   );
 }

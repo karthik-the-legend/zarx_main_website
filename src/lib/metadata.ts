@@ -1,34 +1,40 @@
 import type { Metadata } from "next";
 import { site, withSlash } from "@/lib/site";
 
-/** Per-page metadata with its own canonical URL and social cards. */
+/**
+ * Per-page metadata. `title` is used exactly as written (the brief gives each
+ * page's full SEO title, max 60 characters). `image` is a 1200x630 card in
+ * /public/og/; pages without their own card use the site default.
+ */
 export function pageMetadata({
   title,
   description,
   path,
+  image = "/og/default.png",
+  noindex = false,
 }: {
   title: string;
   description: string;
   path: string;
+  image?: string;
+  noindex?: boolean;
 }): Metadata {
-  const fullTitle = `${title} | ${site.name}`;
   path = withSlash(path);
-  // A page-level openGraph object replaces the inherited one, so the shared
-  // card image from app/opengraph-image.png has to be listed again here.
-  const image = { url: "/opengraph-image.png", width: 1200, height: 630, alt: site.title };
+  const card = { url: image, width: 1200, height: 630, alt: title };
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: path },
     openGraph: {
-      title: fullTitle,
+      title,
       description,
       url: path,
       type: "website",
-      locale: "en_US",
+      locale: "en_IN",
       siteName: site.name,
-      images: [image],
+      images: [card],
     },
-    twitter: { card: "summary_large_image", title: fullTitle, description, images: [image.url] },
+    twitter: { card: "summary_large_image", title, description, images: [card.url] },
+    ...(noindex ? { robots: { index: false, follow: true } } : {}),
   };
 }

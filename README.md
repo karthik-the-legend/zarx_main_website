@@ -50,6 +50,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 ```bash
 npm run build   # static export to ./out (plus scripts/flatten-segment-data.mjs)
 npm start       # preview ./out locally at http://localhost:3000
+npm run deploy  # build and publish to Firebase Hosting
 ```
 
 ## Project Structure
@@ -57,34 +58,24 @@ npm start       # preview ./out locally at http://localhost:3000
 ```
 src/
 ├── app/
-│   ├── layout.tsx                # Shared shell: header, footer, skip link, scroll reveals, site metadata
-│   ├── page.tsx                  # Home: hero + short introductions linking to each page
-│   ├── solutions/page.tsx        # All solutions overview
-│   ├── solutions/[slug]/page.tsx # One detail page per service (generated from content/services.ts)
-│   ├── why-zarx/page.tsx         # Differentiators, who we build for, how we work
-│   ├── process/page.tsx          # Five stages in detail + process FAQ
-│   ├── leadership/page.tsx       # Founder and CTO profiles, values
-│   ├── investors/page.tsx        # Thesis, model, partnership options
-│   ├── contact/page.tsx          # Enquiry form, contact details, FAQ
-│   ├── globals.css               # Design tokens (colours, type, spacing, motion) + base styles
-│   ├── not-found.tsx, error.tsx  # 404 and error pages
-│   ├── robots.ts, sitemap.ts     # Generated /robots.txt and /sitemap.xml (all routes)
-│   └── *-image.png, icon.png     # Open Graph / Twitter images and favicons
-├── content/                      # All page copy lives here — edit text without touching layout
-│   ├── services.ts               # The six services: offerings, deliverables, stack, FAQs
-│   ├── company.ts                # Differentiators, audiences, process, FAQs, investor content
-│   └── leaders.ts                # Leadership profiles and photos
-├── components/
-│   ├── ui/                       # Button, Section, PageHero, Lists (CheckList, FaqList, Tags), ProcessStrip, JsonLd, Logo
-│   ├── Navbar.tsx, Footer.tsx
-│   ├── Hero.tsx                  # Home hero
-│   ├── Solutions.tsx, USP.tsx, Process.tsx, Leadership.tsx, Investor.tsx  # Home introductions
-│   ├── CTABanner.tsx             # Configurable call-to-action band
-│   └── ContactForm.tsx           # Validation, topic prefill (?topic=slug), email delivery
-└── lib/
-    ├── site.ts                   # Business details, site URL, navigation
-    ├── metadata.ts               # Per-page title, description, canonical and social cards
-    └── utils.ts                  # cn() class helper
+│   ├── layout.tsx                 # Header, footer, skip link, scroll reveals, analytics events
+│   ├── page.tsx                   # Home
+│   ├── solutions/                 # Goal router, service comparison, what's always included
+│   ├── services/[slug]/           # Six service pages (one template, data in content/services.ts)
+│   ├── why-zarx/ process/ leadership/ partners/ contact/ careers/
+│   ├── work/ work/[slug]/         # Case studies (hidden from nav until content/work.ts has entries)
+│   ├── insights/ insights/[slug]/ # Articles (hidden from nav until content/insights.ts has entries)
+│   ├── privacy/ terms/ cookies/ trust/
+│   ├── not-found.tsx, error.tsx   # 404 and error pages
+│   └── robots.ts, sitemap.ts, icon.png, apple-icon.png
+├── content/                       # All copy: facts, services, company, engagements, leaders, work, insights, careers
+├── components/                    # Page sections and shared blocks (Navbar, Footer, CTABanner, forms, cards)
+│   └── ui/                        # Primitives: Button, Section, PageHero, Lists, ProcessStrip, TrustStrip, JsonLd
+├── lib/                           # site, cta, metadata, analytics, submit (form delivery), utils
+└── assets/                        # Founder photos
+scripts/
+├── flatten-segment-data.mjs       # Post-build fix for static hosting (runs automatically)
+└── make-og-images.py              # Regenerates the share images in public/og/
 ```
 
 ## Design System
@@ -111,18 +102,43 @@ replace `deliver()` in `src/components/ContactForm.tsx`.
 ### Business details
 Email, location and other facts live in `src/lib/site.ts`. Page copy lives in `src/content/`; adding a service to `services.ts` creates its page, footer link, sitemap entry and contact-form topic automatically.
 
-## Deployment (Hostinger)
+## Facts only the founders can supply
 
-The site is a static export, so it runs on any Hostinger web-hosting plan (no Node.js needed).
+`src/content/facts.ts` holds every fact the site must not invent: prices, booking link, phone and WhatsApp,
+CIN, GSTIN, registered office, team size, proof numbers, review ratings, the data & grievance contact and the
+Web3Forms key for form delivery. Anything left `null` is hidden on the site – never shown as a placeholder.
+Case studies go in `src/content/work.ts`, articles in `src/content/insights.ts` and open roles in
+`src/content/careers.ts`; Work and Insights appear in the navigation once they have entries.
 
-1. `npm run build` — writes the site to `out/`, including `.htaccess` (HTTPS, www → apex, 404 page).
-2. Zip the **contents** of `out/` (so `index.html` and `.htaccess` sit at the top of the zip).
-3. hPanel → **Websites → zarxtechnologies.com → File Manager** → open `public_html`.
-4. Delete any placeholder files there (e.g. `default.php`), upload the zip, then **Extract** it into `public_html`.
-5. hPanel → **Security → SSL**: install the free certificate for the domain.
-6. Visit https://zarxtechnologies.com and check a few pages, e.g. `/solutions/` and `/contact/`.
+## Share images
 
-To update the site later, rebuild and repeat steps 2–4 (replacing the old files).
+Each page has a 1200×630 card in `public/og/`. After changing a headline, regenerate them with
+`python scripts/make-og-images.py` (needs Pillow).
+
+## Deployment
+
+The site is a static export (`npm run build` writes plain files to `out/`), so it can be served by any static host.
+
+### Firebase Hosting (current)
+
+Configured in `firebase.json`: publishes `out/`, keeps trailing-slash URLs, serves `404.html`, and caches hashed assets in `/_next/static/` for a year.
+
+One-time setup:
+
+1. `firebase login` (opens a Google sign-in).
+2. Create a project at console.firebase.google.com (free Spark plan) and link it: `firebase use --add <project-id>`.
+
+Deploy (also how you publish every update):
+
+```bash
+npm run deploy   # = npm run build && firebase deploy --only hosting
+```
+
+Custom domain: Firebase console → **Hosting → Add custom domain** → `zarxtechnologies.com`. Add the TXT and A records it shows in Hostinger hPanel (**Domains → DNS / Nameservers**), removing Hostinger's old parking A records for `@` and `www`. Add `www.zarxtechnologies.com` too, set to redirect to the main domain. HTTPS is issued automatically (allow up to 24 hours).
+
+### Other static hosts (e.g. Hostinger web hosting)
+
+Upload the **contents** of `out/` to the web root (`public_html`). `public/.htaccess` (copied into `out/`) handles HTTPS, www → apex, trailing slashes and the 404 page on Apache/LiteSpeed hosts.
 
 The domain is set in `src/lib/site.ts` (or via `NEXT_PUBLIC_SITE_URL`) and in `public/.htaccess`; change both if it ever moves.
 

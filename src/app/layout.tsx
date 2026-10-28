@@ -1,9 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { site } from "@/lib/site";
-import Navbar from "@/components/Navbar";
+import { services } from "@/content/services";
+import { hasWork } from "@/content/work";
+import { hasInsights } from "@/content/insights";
+import Navbar, { type MenuService } from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import RevealObserver from "@/components/ui/RevealObserver";
+import Analytics from "@/components/ui/Analytics";
 import "./globals.css";
 
 const inter = Inter({
@@ -14,42 +18,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: {
-    default: site.title,
-    template: `%s | ${site.name}`,
-  },
+  title: { default: site.title, template: `%s | ${site.shortName}` },
   description: site.description,
   applicationName: site.name,
-  keywords: [
-    "ZARX Technologies",
-    "AI development",
-    "product engineering",
-    "web development",
-    "mobile app development",
-    "Web3",
-    "game development",
-    "UI/UX design",
-    "startup MVP",
-    "New Delhi",
-  ],
   authors: [{ name: site.legalName }],
   creator: site.legalName,
-  alternates: { canonical: "/" },
-  openGraph: {
-    title: site.title,
-    description:
-      "AI-powered development, game-grade visuals, and production-ready engineering for founders and future-focused businesses.",
-    url: "/",
-    type: "website",
-    locale: "en_US",
-    siteName: site.name,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: site.title,
-    description:
-      "AI-powered development, game-grade visuals, and production-ready engineering for founders and future-focused businesses.",
-  },
   robots: { index: true, follow: true },
   formatDetection: { email: false, telephone: false, address: false },
 };
@@ -60,6 +33,22 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+// Only serialisable data crosses into the client header, so icons go by name.
+const menuIcons: Record<string, MenuService["icon"]> = {
+  "web-platforms": "Globe",
+  "mobile-gaming": "Gamepad2",
+  web3: "Blocks",
+  "ai-automation": "BrainCircuit",
+  "ui-ux-design": "Palette",
+  animation: "Clapperboard",
+};
+const menu: MenuService[] = services.map((s) => ({
+  slug: s.slug,
+  name: s.name,
+  line: s.card.headline,
+  icon: menuIcons[s.slug] ?? "Globe",
+}));
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -68,7 +57,7 @@ export default function RootLayout({
   return (
     // data-scroll-behavior lets Next.js turn off CSS smooth scrolling while it
     // resets scroll on route changes, so new pages open at the top.
-    <html lang="en" className={inter.variable} data-scroll-behavior="smooth">
+    <html lang="en-IN" className={inter.variable} data-scroll-behavior="smooth">
       <body className="font-sans">
         <a
           href="#main"
@@ -76,12 +65,13 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <Navbar />
+        <Navbar services={menu} showWork={hasWork()} showInsights={hasInsights()} />
         <main id="main" tabIndex={-1} className="outline-none">
           {children}
         </main>
         <Footer />
         <RevealObserver />
+        <Analytics />
       </body>
     </html>
   );

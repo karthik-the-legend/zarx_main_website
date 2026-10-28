@@ -1,0 +1,22 @@
+{
+  "hosting": {
+    "public": "out",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "trailingSlash": true,
+    "redirects": [
+      { "source": "/investors{,/**}", "destination": "/partners/", "type": 301 },
+      { "source": "/solutions/web-platforms{,/**}", "destination": "/services/web-platforms/", "type": 301 },
+      { "source": "/solutions/mobile-gaming-apps{,/**}", "destination": "/services/mobile-gaming/", "type": 301 },
+      { "source": "/solutions/web3{,/**}", "destination": "/services/web3/", "type": 301 },
+      { "source": "/solutions/ai-automation{,/**}", "destination": "/services/ai-automation/", "type": 301 },
+      { "source": "/solutions/ui-ux-design{,/**}", "destination": "/services/ui-ux-design/", "type": 301 },
+      { "source": "/solutions/animation-visual-systems{,/**}", "destination": "/services/animation/", "type": 301 }
+    ],
+    "headers": [
+      {
+        "source": "/_next/static/**",
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      }
+    ]
+  }
+}

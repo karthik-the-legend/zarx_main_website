@@ -11,6 +11,7 @@ export function PageHero({
   title,
   lead,
   children,
+  after,
   className,
 }: {
   crumbs: Crumb[];
@@ -18,6 +19,8 @@ export function PageHero({
   title: ReactNode;
   lead: ReactNode;
   children?: ReactNode;
+  /** Shown under the buttons, e.g. proof bullets. */
+  after?: ReactNode;
   className?: string;
 }) {
   return (
@@ -69,6 +72,11 @@ export function PageHero({
               style={{ "--delay": "180ms" } as React.CSSProperties}
             >
               {children}
+            </div>
+          )}
+          {after && (
+            <div className="animate-rise mt-9" style={{ "--delay": "260ms" } as React.CSSProperties}>
+              {after}
             </div>
           )}
         </div>

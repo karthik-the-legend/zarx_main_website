@@ -12,3 +12,6 @@ next-env.d.ts
 
 # Local editor/assistant settings
 .claude/
+
+# Firebase CLI cache
+.firebase/
