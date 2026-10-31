@@ -16,9 +16,9 @@ export const facts = {
   /** Cal.com / Calendly link for "Book a free 30-minute call". */
   bookingUrl: null as string | null,
   /** Displayed phone number, e.g. "+91 98765 43210" (Mon–Fri, 10:00–19:00 IST). */
-  phone: null as string | null,
+  phone: "+91 70220 77516" as string | null,
   /** WhatsApp number in international format, digits only, e.g. "919876543210". */
-  whatsapp: null as string | null,
+  whatsapp: "917022077516" as string | null,
   /** Registered office address (shown in the footer, contact page and facts box). */
   registeredOffice: null as string | null,
   /** Direct founder emails for the Leadership page. */
@@ -36,7 +36,7 @@ export const facts = {
 
   /* ── Privacy (DPDP) ────────────────────────────────────────────── */
   /** Named person responsible for personal data and grievances. */
-  grievanceOfficer: null as { name: string; email: string } | null,
+  grievanceOfficer: { name: "Karthik K S", email: "karthikks1112@gmail.com" } as { name: string; email: string } | null,
   /** How long enquiry data is kept if no project starts. */
   dataRetentionMonths: null as number | null,
 
@@ -74,7 +74,7 @@ export const facts = {
 
   /* ── Profiles (only active accounts) ───────────────────────────── */
   socials: {
-    linkedin: null as string | null,
+    linkedin: "https://www.linkedin.com/company/zarx-technologies-pvt-ltd/" as string | null,
     x: null as string | null,
     instagram: null as string | null,
     github: null as string | null,
@@ -89,7 +89,7 @@ export const facts = {
    * careers forms submit straight to the founders' inbox. When null, they open the
    * visitor's email app with the message pre-filled.
    */
-  web3formsKey: null as string | null,
+  web3formsKey: "1de18c84-0538-4803-ad97-f967bd505742" as string | null,
 };
 
 export const hasBooking = () => Boolean(facts.bookingUrl);

@@ -43,6 +43,7 @@ const jsonLd = {
       url: site.url,
       logo: `${site.url}/zarx-wordmark-dark.png`,
       email: site.email,
+      ...(facts.phone ? { telephone: facts.phone.replace(/\s/g, "") } : {}),
       slogan: site.promise,
       description: site.positioning,
       address: {

@@ -14,7 +14,7 @@ export const site = {
   tagline: "From idea to reality. Built to scale.",
   description:
     "Founder-led studio building web, mobile, game, Web3 and AI products in weeks. Senior engineers, AI-assisted delivery, 100% IP ownership. Book a free call.",
-  email: "info@zarxtechnologies.com",
+  email: "zarx.technologies.pvt.ltd@gmail.com",
   location: { city: "New Delhi", country: "India", countryCode: "IN" },
   founders: ["Aniket Singh", "Karthik K S"],
 } as const;

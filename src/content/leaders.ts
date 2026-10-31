@@ -15,8 +15,7 @@ export const leaders = [
     bio: "Aniket founded ZARX Technologies to give founders a senior product team that moves at startup speed and hands over everything it builds. He leads the company's strategy and its client partnerships, and sets the commercial terms behind every engagement – from the fixed quote to IP assignment. He joins every client kickoff and monthly review.",
     accountableFor: ["Client outcomes", "Commercial terms", "Company strategy"],
     focus: ["Strategy", "Client partnerships", "IP-driven products"],
-    linkedin:
-      "https://www.linkedin.com/in/aniket-singh-53a401230?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+    linkedin: "https://www.linkedin.com/in/aniket-singh-53a401230/",
     email: facts.founderEmails["Aniket Singh"],
     image: aniketSingh,
   },
