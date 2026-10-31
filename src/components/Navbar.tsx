@@ -278,11 +278,14 @@ export default function Navbar({
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu. Visibility is a class, not the `hidden` attribute: the
+          `flex` utility would override the attribute and keep it on screen. */}
       <div
         id="mobile-menu"
-        hidden={!open}
-        className="fixed inset-x-0 bottom-0 top-[var(--header-h)] flex flex-col bg-canvas lg:hidden"
+        className={cn(
+          "fixed inset-x-0 bottom-0 top-[var(--header-h)] flex-col bg-canvas lg:hidden",
+          open ? "flex" : "hidden"
+        )}
       >
         <nav aria-label="Mobile" className="container-page flex-1 overflow-y-auto pb-6 pt-2">
           <p className="pb-2 pt-4 text-xs font-semibold uppercase tracking-[0.12em] text-muted">Services</p>
