@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { absoluteUrl, site } from "@/lib/site";
 import { pageMetadata } from "@/lib/metadata";
 import { articles } from "@/content/insights";
-import { leaders } from "@/content/leaders";
 import { getService } from "@/content/services";
 import { PageHero, type Crumb } from "@/components/ui/PageHero";
 import { Section } from "@/components/ui/Section";
@@ -37,7 +35,6 @@ export default async function ArticlePage({ params }: Props) {
 
   const path = `/insights/${a.slug}`;
   const crumbs: Crumb[] = [{ label: "Home", href: "/" }, { label: "Insights", href: "/insights" }, { label: a.category }];
-  const author = leaders.find((l) => l.name === a.author);
   const service = getService(a.relatedService);
   const date = new Date(a.date).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
@@ -47,17 +44,7 @@ export default async function ArticlePage({ params }: Props) {
       <Section labelledBy="article-body">
         <article className="mx-auto max-w-3xl">
           <h2 id="article-body" className="sr-only">Article</h2>
-          <div className="flex items-center gap-4">
-            {author && (
-              <Image src={author.image} alt="" placeholder="blur" sizes="48px" className="h-12 w-12 rounded-full object-cover object-[center_20%]" />
-            )}
-            <p className="text-sm">
-              <span className="font-medium">{a.author}</span>
-              {author && <span className="block text-muted">{author.role} · <a href={author.linkedin} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">LinkedIn</a></span>}
-            </p>
-          </div>
-
-          <aside className="mt-10 rounded-lg border border-line bg-subtle p-6">
+          <aside className="rounded-lg border border-line bg-subtle p-6">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">In short</p>
             <ul className="mt-3 list-disc space-y-1.5 pl-5 text-[0.9375rem]">
               {a.summary.map((s) => <li key={s}>{s}</li>)}
@@ -106,7 +93,7 @@ export default async function ArticlePage({ params }: Props) {
               description: a.summary.join(" "),
               datePublished: a.date,
               url: absoluteUrl(path),
-              author: { "@type": "Person", name: a.author, ...(author ? { sameAs: [author.linkedin.split("?")[0]] } : {}) },
+              author: { "@type": "Organization", "@id": `${site.url}/#organization`, name: site.legalName },
               publisher: { "@type": "Organization", "@id": `${site.url}/#organization`, name: site.legalName },
               inLanguage: "en-IN",
             },

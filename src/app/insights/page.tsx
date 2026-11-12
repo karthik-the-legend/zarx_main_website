@@ -40,7 +40,7 @@ export default function InsightsPage() {
                 </h3>
                 <p className="mt-3 text-[0.9375rem] text-muted">{a.summary[0]}</p>
                 <p className="mt-auto pt-5 text-sm text-muted">
-                  {a.author} · <time dateTime={a.date}>{formatDate(a.date)}</time> · {a.readingMinutes} min read
+                  <time dateTime={a.date}>{formatDate(a.date)}</time> · {a.readingMinutes} min read
                 </p>
               </li>
             ))}

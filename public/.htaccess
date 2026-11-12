@@ -13,6 +13,7 @@ RewriteRule ^ https://zarxtechnologies.com%{REQUEST_URI} [L,R=301]
 
 # Old addresses from the first version of the site.
 RewriteRule ^investors/?$ https://zarxtechnologies.com/partners/ [L,R=301]
+RewriteRule ^leadership/?$ https://zarxtechnologies.com/why-zarx/ [L,R=301]
 RewriteRule ^solutions/web-platforms/?$ https://zarxtechnologies.com/services/web-platforms/ [L,R=301]
 RewriteRule ^solutions/mobile-gaming-apps/?$ https://zarxtechnologies.com/services/mobile-gaming/ [L,R=301]
 RewriteRule ^solutions/web3/?$ https://zarxtechnologies.com/services/web3/ [L,R=301]

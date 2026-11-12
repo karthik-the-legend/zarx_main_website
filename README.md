@@ -62,17 +62,16 @@ src/
 │   ├── page.tsx                   # Home
 │   ├── solutions/                 # Goal router, service comparison, what's always included
 │   ├── services/[slug]/           # Six service pages (one template, data in content/services.ts)
-│   ├── why-zarx/ process/ leadership/ partners/ contact/ careers/
+│   ├── why-zarx/ process/ partners/ contact/ careers/
 │   ├── work/ work/[slug]/         # Case studies (hidden from nav until content/work.ts has entries)
 │   ├── insights/ insights/[slug]/ # Articles (hidden from nav until content/insights.ts has entries)
 │   ├── privacy/ terms/ cookies/ trust/
 │   ├── not-found.tsx, error.tsx   # 404 and error pages
 │   └── robots.ts, sitemap.ts, icon.png, apple-icon.png
-├── content/                       # All copy: facts, services, company, engagements, leaders, work, insights, careers
+├── content/                       # All copy: facts, services, company, engagements, work, insights, careers
 ├── components/                    # Page sections and shared blocks (Navbar, Footer, CTABanner, forms, cards)
 │   └── ui/                        # Primitives: Button, Section, PageHero, Lists, ProcessStrip, TrustStrip, JsonLd
-├── lib/                           # site, cta, metadata, analytics, submit (form delivery), utils
-└── assets/                        # Founder photos
+└── lib/                           # site, cta, metadata, analytics, submit (form delivery), utils
 scripts/
 ├── flatten-segment-data.mjs       # Post-build fix for static hosting (runs automatically)
 └── make-og-images.py              # Regenerates the share images in public/og/

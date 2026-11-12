@@ -8,7 +8,6 @@ export type Article = {
   slug: string;
   title: string;
   category: "Product & MVP" | "AI" | "Mobile & Games" | "Web3" | "Design" | "Company news";
-  author: string;
   /** ISO date, e.g. "2026-11-12". */
   date: string;
   readingMinutes: number;

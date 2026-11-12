@@ -15,7 +15,6 @@ export type MenuService = { slug: string; name: string; line: string; icon: keyo
 
 const about = [
   { label: "Why ZARX", href: "/why-zarx", text: "What makes us different, in writing" },
-  { label: "Leadership", href: "/leadership", text: "The founders accountable for your product" },
   { label: "Investors & Partners", href: "/partners", text: "Partnerships and investor conversations" },
   { label: "Careers", href: "/careers", text: "Join a small, senior team" },
 ];

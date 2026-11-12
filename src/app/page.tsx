@@ -16,7 +16,6 @@ import { JsonLd } from "@/components/ui/JsonLd";
 import { aiAccelerates, homeFaqs, peopleDecide } from "@/content/company";
 import { homeEngagements } from "@/content/engagements";
 import { facts } from "@/content/facts";
-import { leaders } from "@/content/leaders";
 import { services } from "@/content/services";
 import { cases } from "@/content/work";
 import { articles } from "@/content/insights";
@@ -52,7 +51,6 @@ const jsonLd = {
         addressLocality: site.location.city,
         addressCountry: site.location.countryCode,
       },
-      founder: leaders.map((l) => ({ "@type": "Person", name: l.name, jobTitle: l.role })),
       sameAs: [facts.socials.linkedin, facts.socials.x, facts.socials.instagram, facts.socials.github].filter(Boolean),
       makesOffer: services.map((s) => ({
         "@type": "Offer",
@@ -228,57 +226,8 @@ export default function Home() {
         <EngagementCards ids={homeEngagements} />
       </Section>
 
-      <Section labelledBy="founders-title">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-          <div data-reveal className="lg:col-span-5">
-            <p className="eyebrow mb-4">Why we started ZARX</p>
-            <h2 id="founders-title" className="text-h2">
-              We built ZARX for the founders we used to be
-            </h2>
-            <div className="mt-8 flex -space-x-3">
-              {leaders.map((l) => (
-                <Image
-                  key={l.name}
-                  src={l.image}
-                  alt={l.name}
-                  placeholder="blur"
-                  sizes="80px"
-                  className="h-20 w-20 rounded-full border-4 border-canvas object-cover object-[center_20%]"
-                />
-              ))}
-            </div>
-          </div>
-          <div data-reveal className="lg:col-span-7">
-            <div className="space-y-5 text-lead text-ink">
-              <p>
-                We kept seeing the same story. Founders paid for months of agency work, met
-                a senior team at the pitch and a junior one on the project, and ended up with
-                code they couldn&apos;t change and IP they didn&apos;t fully own.
-              </p>
-              <p>
-                So we built the studio we wished we&apos;d had: senior people on every build, AI
-                doing the repetitive work so you reach a working product sooner, and
-                everything handed over – code, designs and accounts.
-              </p>
-              <p className="text-muted">
-                Email us at{" "}
-                <a href={`mailto:${site.email}`} className="link-underline text-ink">
-                  {site.email}
-                </a>{" "}
-                – we read every message ourselves.
-              </p>
-            </div>
-            <p className="mt-8 text-sm font-medium">
-              {leaders.map((l) => l.name).join(" & ")}
-              <span className="block font-normal text-muted">Founders, ZARX Technologies</span>
-            </p>
-            <ArrowLink href="/leadership" className="mt-6">Meet the leadership</ArrowLink>
-          </div>
-        </div>
-      </Section>
-
       {articles.length >= 3 && (
-        <Section tone="subtle" labelledBy="insights-title">
+        <Section labelledBy="insights-title">
           <SectionHeading id="insights-title" eyebrow="Insights" title="Notes from the build floor" />
           <ul className="grid gap-6 md:grid-cols-3">
             {articles.slice(0, 3).map((a) => (
@@ -294,7 +243,7 @@ export default function Home() {
         </Section>
       )}
 
-      <FaqSection items={homeFaqs} tone="subtle" />
+      <FaqSection items={homeFaqs} tone={articles.length >= 3 ? "subtle" : "default"} />
       <CTABanner />
       <JsonLd data={jsonLd} />
     </>

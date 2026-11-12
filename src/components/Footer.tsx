@@ -26,7 +26,6 @@ export default function Footer() {
       links: [
         { label: "Why ZARX", href: "/why-zarx" },
         { label: "Process", href: "/process" },
-        { label: "Leadership", href: "/leadership" },
         { label: "Investors & Partners", href: "/partners" },
         { label: "Careers", href: "/careers" },
       ],

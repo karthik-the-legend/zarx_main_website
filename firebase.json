@@ -5,6 +5,7 @@
     "trailingSlash": true,
     "redirects": [
       { "source": "/investors{,/**}", "destination": "/partners/", "type": 301 },
+      { "source": "/leadership{,/**}", "destination": "/why-zarx/", "type": 301 },
       { "source": "/solutions/web-platforms{,/**}", "destination": "/services/web-platforms/", "type": 301 },
       { "source": "/solutions/mobile-gaming-apps{,/**}", "destination": "/services/mobile-gaming/", "type": 301 },
       { "source": "/solutions/web3{,/**}", "destination": "/services/web3/", "type": 301 },

@@ -14,7 +14,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...services.map((s) => page(`/services/${s.slug}`, 0.9)),
     page("/why-zarx", 0.8),
     page("/process", 0.8),
-    page("/leadership", 0.7),
     page("/partners", 0.6),
     page("/contact", 0.9),
     page("/careers", 0.5),

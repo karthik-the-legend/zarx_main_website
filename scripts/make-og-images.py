@@ -25,7 +25,6 @@ CARDS = {
     "service-animation": ("Motion that explains", "and sells.", "Animation & Visual Systems"),
     "why-zarx": ("Big-studio quality.", "Startup speed. Your IP.", "Why ZARX"),
     "process": ("No black boxes.", "A demo every week.", "Our process"),
-    "leadership": ("The people accountable", "for your product.", "Leadership"),
     "partners": ("Build the next wave", "of products with us.", "Investors & Partners"),
     "contact": ("Let's talk about what", "you're building.", "Book a free 30-minute call"),
     "careers": ("Build products", "people remember.", "Careers"),

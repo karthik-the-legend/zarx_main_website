@@ -381,15 +381,6 @@ export const needsFromYou = [
   "Timely feedback – within 2 working days",
 ];
 
-/* ─── Leadership ───────────────────────────────────────────────── */
-
-export const values: { title: string; text: string }[] = [
-  { title: "Ownership", text: withFacts("We ship it, we fix it: {freeFix} on everything we deliver.") },
-  { title: "Candour", text: "We tell you early when something is off track, with a plan to fix it." },
-  { title: "Craft", text: "Game-studio polish in every product: feel, feedback and motion." },
-  { title: "Founder-first", text: "A founder joins every kickoff and every monthly review." },
-];
-
 /* ─── Investors & Partners ─────────────────────────────────────── */
 
 export const thesis: { title: string; text: string }[] = [
@@ -461,7 +452,6 @@ export const investorDisclaimer =
 export const governance = present([
   "Registered private limited company",
   "Statutory filings up to date",
-  "Founder contacts on the Leadership page",
 ]);
 
 /* ─── FAQs ─────────────────────────────────────────────────────── */

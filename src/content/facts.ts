@@ -21,8 +21,6 @@ export const facts = {
   whatsapp: "917022077516" as string | null,
   /** Registered office address (shown in the footer, contact page and facts box). */
   registeredOffice: null as string | null,
-  /** Direct founder emails for the Leadership page. */
-  founderEmails: { "Aniket Singh": null as string | null, "Karthik K S": null as string | null },
 
   /* ── Company identifiers ───────────────────────────────────────── */
   cin: null as string | null,
@@ -35,8 +33,8 @@ export const facts = {
   dpiitNumber: null as string | null,
 
   /* ── Privacy (DPDP) ────────────────────────────────────────────── */
-  /** Named person responsible for personal data and grievances. */
-  grievanceOfficer: { name: "Karthik K S", email: "karthikks1112@gmail.com" } as { name: string; email: string } | null,
+  /** Named person responsible for personal data and grievances. While null, the company email is shown. */
+  grievanceOfficer: null as { name: string; email: string } | null,
   /** How long enquiry data is kept if no project starts. */
   dataRetentionMonths: null as number | null,
 
