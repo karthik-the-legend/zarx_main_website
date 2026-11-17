@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import { cn } from "@/lib/utils";
-import { processSteps } from "@/content/company";
+import { businessSteps, processSteps } from "@/content/company";
+import type { CategoryKey } from "@/content/categories";
 import { withFacts } from "@/content/engagements";
 
 type Step = { title: string; meta?: string; text?: string; tag?: string };
@@ -65,8 +66,24 @@ export function Timeline({ steps, tone = "default" }: { steps: Step[]; tone?: "d
   );
 }
 
-/** The five ZARX stages with durations (Home snapshot, service pages, Process overview). */
-export function ProcessStrip({ tone = "default", detailed = false }: { tone?: "default" | "dark"; detailed?: boolean }) {
+/** The five ZARX stages with durations (Home snapshot, category pages, Process overview). */
+export function ProcessStrip({
+  tone = "default",
+  detailed = false,
+  category = "technology",
+}: {
+  tone?: "default" | "dark";
+  detailed?: boolean;
+  category?: CategoryKey;
+}) {
+  if (category === "business") {
+    return (
+      <Timeline
+        tone={tone}
+        steps={businessSteps.map((s) => ({ title: s.title, meta: s.duration, text: detailed || s.key === "measure" ? s.text : undefined }))}
+      />
+    );
+  }
   return (
     <Timeline
       tone={tone}

@@ -1,12 +1,17 @@
 import type { LucideIcon } from "lucide-react";
 import { Blocks, BrainCircuit, Clapperboard, Gamepad2, Globe, Palette } from "lucide-react";
+import { categoryByKey, type CategoryKey } from "@/content/categories";
+import { businessServices } from "@/content/business-services";
 
-type Faq = { question: string; answer: string };
+type Faq = { question: string; answer: string; draft?: boolean };
 
 export type Service = {
   slug: string;
+  category: CategoryKey;
   icon: LucideIcon;
   name: string;
+  /** Copy waiting for ZARX sign-off; marked on staging builds. */
+  draft?: boolean;
   seoTitle: string;
   seoDescription: string;
   /** Card copy used on Home, Solutions and the mega-menu. */
@@ -19,21 +24,24 @@ export type Service = {
   capabilities: { title: string; text: string; chips: string[] }[];
   deliverables: string[];
   timeline: { title: string; steps: { when: string; what: string }[] };
+  /** Technologies (technology services) or platforms and tools (business services). */
   tech: { group: string; items: string[] }[];
   engagements: string[];
   fit: string[];
   notFit: string[];
+  /** Quality & security (technology) or reporting & measurement (business). */
   quality: string[];
-  /** Optional sourced context or compliance box. */
-  note?: { title: string; text: string; source?: string };
+  /** Optional sourced context or compliance box, with an optional cross-link. */
+  note?: { title: string; text: string; source?: string; link?: { label: string; href: string } };
   faqs: Faq[];
   related: string[];
   ctaHeadline: string;
 };
 
-export const services: Service[] = [
+const technologyServices: Service[] = [
   {
     slug: "web-platforms",
+    category: "technology",
     icon: Globe,
     name: "Web Platforms",
     seoTitle: "Web App & SaaS Development | ZARX",
@@ -161,6 +169,7 @@ export const services: Service[] = [
   },
   {
     slug: "mobile-gaming",
+    category: "technology",
     icon: Gamepad2,
     name: "Mobile & Gaming Apps",
     seoTitle: "Mobile App & Game Development | ZARX",
@@ -290,6 +299,7 @@ export const services: Service[] = [
   },
   {
     slug: "web3",
+    category: "technology",
     icon: Blocks,
     name: "Web3 Products",
     seoTitle: "Web3 & Smart Contract Development | ZARX",
@@ -413,6 +423,7 @@ export const services: Service[] = [
   },
   {
     slug: "ai-automation",
+    category: "technology",
     icon: BrainCircuit,
     name: "AI Builders & Automation",
     seoTitle: "AI Agent & Automation Development | ZARX",
@@ -540,6 +551,7 @@ export const services: Service[] = [
   },
   {
     slug: "ui-ux-design",
+    category: "technology",
     icon: Palette,
     name: "UI/UX Design",
     seoTitle: "UI/UX Design for Apps, SaaS & Games | ZARX",
@@ -653,6 +665,7 @@ export const services: Service[] = [
   },
   {
     slug: "animation",
+    category: "technology",
     icon: Clapperboard,
     name: "Animation & Visual Systems",
     seoTitle: "Product Animation, Motion & 3D | ZARX",
@@ -769,6 +782,16 @@ export const services: Service[] = [
   },
 ];
 
+/** All ten services: Business Consultancy first, then Technology Consultancy. */
+export const services: Service[] = [...businessServices, ...technologyServices];
+
 export function getService(slug: string) {
   return services.find((service) => service.slug === slug);
+}
+
+export const servicesIn = (category: CategoryKey) => services.filter((s) => s.category === category);
+
+/** "/services/technology-consultancy/web-platforms" – every service lives under its category. */
+export function serviceHref(service: Pick<Service, "slug" | "category">) {
+  return `/services/${categoryByKey[service.category].slug}/${service.slug}`;
 }

@@ -8,7 +8,9 @@
     "start": "npx --yes serve@14.2.4 out -l 3000",
     "lint": "eslint",
     "postbuild": "node scripts/flatten-segment-data.mjs",
-    "deploy": "npm run build && firebase deploy --only hosting"
+    "deploy": "npm run build && firebase deploy --only hosting",
+    "build:staging": "node scripts/deploy-staging.mjs --build-only",
+    "deploy:staging": "node scripts/deploy-staging.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.0",

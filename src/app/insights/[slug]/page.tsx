@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { absoluteUrl, site } from "@/lib/site";
 import { pageMetadata } from "@/lib/metadata";
 import { articles } from "@/content/insights";
-import { getService } from "@/content/services";
+import { getService, serviceHref } from "@/content/services";
 import { PageHero, type Crumb } from "@/components/ui/PageHero";
 import { Section } from "@/components/ui/Section";
 import { ArrowLink } from "@/components/ui/Button";
@@ -76,7 +76,7 @@ export default async function ArticlePage({ params }: Props) {
             <div className="mt-12 rounded-lg bg-accent-soft p-6">
               <p className="font-semibold">{service.card.headline}</p>
               <p className="mt-1 text-[0.9375rem] text-muted">{service.card.line}</p>
-              <ArrowLink href={`/services/${service.slug}`} className="mt-4">Explore {service.name}</ArrowLink>
+              <ArrowLink href={serviceHref(service)} className="mt-4">Explore {service.name}</ArrowLink>
             </div>
           )}
           <p className="mt-10 text-sm"><Link href="/insights" className="text-accent">← All insights</Link></p>

@@ -26,7 +26,7 @@ const nextSteps = [
   { when: "Within 1 working day", what: "A founder reads your brief and replies." },
   { when: "Within 3 days", what: "A 30-minute call to understand your goals and constraints." },
   { when: "Within 5 days", what: "A short proposal: approach, timeline and budget range." },
-  { when: "Kickoff", what: "Usually a 1–2 week Discovery Sprint with a fixed quote." },
+  { when: "Kickoff", what: "Usually a Discovery Sprint or a Growth Audit, with a fixed quote." },
 ];
 
 export default function ContactPage() {
@@ -51,7 +51,7 @@ export default function ContactPage() {
       <PageHero
         crumbs={crumbs}
         eyebrow="Contact"
-        title="Let's talk about what you're building"
+        title="Let's talk about what you're growing or building"
         lead="Book a call if you're ready to talk, or send a short brief and a founder will reply within one working day."
       />
 
@@ -107,7 +107,7 @@ export default function ContactPage() {
       <section aria-label="Our promises" className="border-b border-line">
         <ul className="container-page flex flex-wrap gap-x-8 gap-y-3 py-6 text-sm font-medium">
           <li className="flex items-center gap-2"><FileLock2 aria-hidden="true" className="h-4 w-4 text-accent" />NDA on request</li>
-          <li className="flex items-center gap-2"><KeyRound aria-hidden="true" className="h-4 w-4 text-accent" />You own 100% of the code</li>
+          <li className="flex items-center gap-2"><KeyRound aria-hidden="true" className="h-4 w-4 text-accent" />You own what we make for you</li>
           <li className="flex items-center gap-2"><Clock3 aria-hidden="true" className="h-4 w-4 text-accent" />Reply within 1 working day</li>
         </ul>
       </section>

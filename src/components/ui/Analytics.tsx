@@ -18,8 +18,10 @@ export default function Analytics() {
   }, [pathname]);
 
   useEffect(() => {
-    const service = pathname.match(/^\/services\/([^/]+)/)?.[1];
-    if (service) track("service_page_view", { service });
+    // /services/<category>/ is a category page; /services/<category>/<service>/ a service page.
+    const [, category, service] = pathname.match(/^\/services\/([^/]+)(?:\/([^/]+))?/) ?? [];
+    if (service) track("service_page_view", { service, category });
+    else if (category) track("category_page_view", { category });
     const caseStudy = pathname.match(/^\/work\/([^/]+)/)?.[1];
     if (caseStudy) track("case_study_view", { case: caseStudy });
 

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { DraftTag } from "@/components/ui/Draft";
 
 export function CheckIcon({ className }: { className?: string }) {
   return (
@@ -50,7 +51,7 @@ export function FaqList({
   items,
   className,
 }: {
-  items: { question: string; answer: string }[];
+  items: { question: string; answer: string; draft?: boolean }[];
   className?: string;
 }) {
   return (
@@ -58,7 +59,10 @@ export function FaqList({
       {items.map((faq) => (
         <details key={faq.question} className="faq-item border-b border-line">
           <summary className="flex cursor-pointer items-center justify-between gap-6 py-5 text-left text-[1.0625rem] font-medium tracking-tight transition-colors hover:text-accent">
-            {faq.question}
+            <span>
+              {faq.question}
+              {faq.draft && <DraftTag />}
+            </span>
             <span
               aria-hidden="true"
               className="faq-icon relative h-4 w-4 shrink-0 text-muted transition-transform duration-base ease-out"

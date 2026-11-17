@@ -178,8 +178,95 @@ const list: Engagement[] = [
     bestFor: "Brands that look different on every channel",
     includes: ["Logo animation and transitions", "Motion guidelines", "Reusable templates"],
   },
+
+  /* Business Consultancy – draft names and scope, awaiting ZARX sign-off */
+  {
+    id: "growth-audit",
+    name: "Growth Audit",
+    duration: "1–2 weeks",
+    bestFor: "Brands that want a clear marketing plan before they spend",
+    includes: ["Review of channels, tracking and competitors", "Goals and budget by channel", "A 90-day plan with a fixed quote"],
+  },
+  {
+    id: "campaign-sprint",
+    name: "Campaign Sprint",
+    duration: "4–6 weeks",
+    bestFor: "Launching or testing a campaign with clear goals",
+    includes: ["Strategy, creatives and set-up", "Optimised every week", "Results report"],
+  },
+  {
+    id: "growth-retainer",
+    name: "Growth Retainer",
+    duration: "Monthly",
+    bestFor: "Ongoing marketing led by a senior specialist",
+    includes: ["Channels run and optimised weekly", "Monthly report and plan", "Scope reviewed every month"],
+  },
+  {
+    id: "creator-shortlist",
+    name: "Creator Shortlist",
+    duration: "1 week",
+    bestFor: "Finding creators who fit before you commit budget",
+    includes: ["Audience and brand-safety checks", "Shortlist with expected fees", "Recommended campaign format"],
+  },
+  {
+    id: "creator-pilot",
+    name: "Creator Pilot",
+    duration: "3–4 weeks",
+    bestFor: "Testing creator marketing on a small budget",
+    includes: ["A small group of vetted creators", "Contracts, briefs and approvals", "Results per creator"],
+  },
+  {
+    id: "creator-programme",
+    name: "Creator Programme",
+    duration: "Monthly",
+    bestFor: "Brands ready for always-on creator marketing",
+    includes: ["Ambassadors and repeat creators", "Monthly content calendar", "Monthly results report"],
+  },
+  {
+    id: "raise-readiness",
+    name: "Raise Readiness Sprint",
+    duration: "2–3 weeks",
+    bestFor: "Founders preparing to meet investors",
+    includes: ["Pitch deck and one-pager", "Data room checklist", "Target investor list"],
+  },
+  {
+    id: "sponsorship-kit",
+    name: "Sponsorship Kit",
+    duration: "2 weeks",
+    bestFor: "Events and properties looking for sponsors",
+    includes: ["Sponsor packages and pricing", "Sponsorship deck", "Target sponsor list"],
+  },
+  {
+    id: "outreach-programme",
+    name: "Outreach Programme",
+    duration: "8–12 weeks",
+    bestFor: "Running a focused raise or sponsorship drive",
+    includes: ["Personalised outreach and follow-ups", "Weekly pipeline updates", "Proposal and negotiation support"],
+  },
+  {
+    id: "partner-map",
+    name: "Partner Mapping",
+    duration: "1–2 weeks",
+    bestFor: "Finding brands that fit before you pitch",
+    includes: ["Partner shortlist with reasons", "Partnership ideas for each", "Outreach plan"],
+  },
+  {
+    id: "partnership-deal",
+    name: "Partnership Deal",
+    duration: "4–8 weeks",
+    bestFor: "Signing and launching one brand partnership",
+    includes: ["Pitch and outreach", "Terms and contract support", "Launch and tracking set-up"],
+  },
+  {
+    id: "partnerships-retainer",
+    name: "Partnerships Retainer",
+    duration: "Monthly",
+    bestFor: "Brands building a steady partnership pipeline",
+    includes: ["Ongoing partner outreach", "Activation support", "Monthly partnership report"],
+  },
 ];
 
 export const engagements = Object.fromEntries(list.map((e) => [e.id, e])) as Record<string, Engagement>;
 
 export const homeEngagements = ["discovery-sprint", "mvp-build", "ai-pilot", "dedicated-squad"];
+export const businessEngagements = ["growth-audit", "campaign-sprint", "raise-readiness", "growth-retainer"];

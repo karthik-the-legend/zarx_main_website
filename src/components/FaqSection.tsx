@@ -12,13 +12,13 @@ export function FaqSection({
   tone = "default",
   id = "faq",
 }: {
-  items: { question: string; answer: string }[];
+  items: { question: string; answer: string; draft?: boolean }[];
   title?: string;
   intro?: ReactNode;
   tone?: "default" | "subtle";
   id?: string;
 }) {
-  const faqs = items.map((f) => ({ question: f.question, answer: withFacts(f.answer) }));
+  const faqs = items.map((f) => ({ ...f, answer: withFacts(f.answer) }));
   return (
     <Section id={id} tone={tone} labelledBy={`${id}-title`}>
       <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">

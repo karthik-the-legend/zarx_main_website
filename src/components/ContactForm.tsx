@@ -4,25 +4,24 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { facts } from "@/content/facts";
+import { categories, categoryByKey } from "@/content/categories";
+import { getService, servicesIn } from "@/content/services";
 import { site } from "@/lib/site";
 import { track } from "@/lib/analytics";
 import { replyByDate, submitForm } from "@/lib/submit";
 import { buttonStyles, ButtonArrow } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
-export const needOptions = ["Web platform", "Mobile app", "Game", "Web3", "AI automation", "UI/UX", "Animation", "Not sure"] as const;
+/** "Service you're interested in" value for visitors who haven't decided. */
+const NOT_SURE = "not-sure";
 
-/** Service page slug → the matching "What do you need?" chip. */
-const serviceToNeed: Record<string, (typeof needOptions)[number]> = {
-  "web-platforms": "Web platform",
-  "mobile-gaming": "Mobile app",
-  web3: "Web3",
-  "ai-automation": "AI automation",
-  "ui-ux-design": "UI/UX",
-  animation: "Animation",
-};
+/** The team a brief goes to, from the chosen service. Used in the email subject so it reaches the right people. */
+function teamFor(service: string) {
+  const s = getService(service);
+  return s ? categoryByKey[s.category].name : "Not sure yet";
+}
 
-const stages = ["Idea", "Prototype", "Live product", "Scaling"];
+const stages = ["Idea", "Early stage", "Live and operating", "Scaling"];
 const budgets = [
   { value: "Under ₹5L", usd: "under ≈ $6k" },
   { value: "₹5–15L", usd: "≈ $6k–17k" },
@@ -39,7 +38,7 @@ type Values = {
   company: string;
   role: string;
   country: string;
-  needs: string[];
+  service: string;
   stage: string;
   budget: string;
   timeline: string;
@@ -52,7 +51,7 @@ type Values = {
 };
 
 const empty: Values = {
-  name: "", email: "", company: "", role: "", country: "", needs: [], stage: "", budget: "", timeline: "",
+  name: "", email: "", company: "", role: "", country: "", service: "", stage: "", budget: "", timeline: "",
   details: "", link: "", source: "", nda: false, callFirst: false, marketing: false,
 };
 
@@ -68,6 +67,7 @@ function errorsFor(step: number, v: Values) {
     else if (!emailOk(v.email)) e.email = "Please enter a valid email address, like name@company.com.";
   }
   if (step === 1) {
+    if (!v.service) e.service = "Please choose a service, or “Not sure yet”.";
     if (!v.stage) e.stage = "Please choose your stage.";
     if (!v.budget) e.budget = "Please choose a budget range, or “Not sure”.";
     if (!v.timeline) e.timeline = "Please choose a timeline.";
@@ -79,18 +79,19 @@ function errorsFor(step: number, v: Values) {
 /** Reads ?service=, ?engagement= and ?call= so links from other pages prefill the brief. */
 export function BriefFormFromUrl() {
   const params = useSearchParams();
-  const need = serviceToNeed[params.get("service") ?? ""];
+  const slug = params.get("service") ?? "";
+  const service = getService(slug) ? slug : undefined;
   const engagement = params.get("engagement") ?? "";
   const callFirst = params.get("call") === "1";
-  return <BriefForm key={`${need}-${engagement}-${callFirst}`} initialNeed={need} engagement={engagement} callFirst={callFirst} />;
+  return <BriefForm key={`${service}-${engagement}-${callFirst}`} initialService={service} engagement={engagement} callFirst={callFirst} />;
 }
 
 export default function BriefForm({
-  initialNeed,
+  initialService,
   engagement = "",
   callFirst = false,
 }: {
-  initialNeed?: string;
+  initialService?: string;
   engagement?: string;
   callFirst?: boolean;
 }) {
@@ -100,7 +101,7 @@ export default function BriefForm({
       if (typeof window !== "undefined") saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "{}");
     } catch {}
     const base = { ...empty, ...saved };
-    if (initialNeed && !base.needs.includes(initialNeed)) base.needs = [...base.needs, initialNeed];
+    if (initialService) base.service = initialService;
     if (callFirst) base.callFirst = true;
     return base;
   });
@@ -152,8 +153,10 @@ export default function BriefForm({
     setStatus("sending");
     try {
       const budget = budgets.find((b) => b.value === values.budget);
+      const team = teamFor(values.service);
       const result = await submitForm({
-        subject: `Project brief – ${values.name}${values.company ? ` (${values.company})` : ""}`,
+        // The [team] tag lets the inbox route the brief to the right people.
+        subject: `[${team}] Project brief – ${values.name}${values.company ? ` (${values.company})` : ""}`,
         replyTo: values.email,
         fields: {
           Name: values.name,
@@ -161,7 +164,8 @@ export default function BriefForm({
           Company: values.company,
           Role: values.role,
           Country: values.country,
-          "What they need": values.needs.join(", "),
+          Category: team,
+          Service: getService(values.service)?.name ?? "Not sure yet",
           Stage: values.stage,
           Budget: budget?.usd && international ? `${values.budget} (${budget.usd})` : values.budget,
           Timeline: values.timeline,
@@ -174,7 +178,7 @@ export default function BriefForm({
           "Marketing emails": values.marketing ? "Yes" : "No",
         },
       });
-      track("estimate_form_submit", { service: values.needs.join("|"), budget: values.budget });
+      track("estimate_form_submit", { service: values.service, category: team, budget: values.budget });
       try {
         window.localStorage.removeItem(STORAGE_KEY);
       } catch {}
@@ -301,32 +305,31 @@ export default function BriefForm({
 
         {step === 1 && (
           <div className="space-y-7">
-            <fieldset>
-              <legend className="mb-2 text-sm font-medium">What do you need? <span className="font-normal text-muted">(choose any)</span></legend>
-              <div className="flex flex-wrap gap-2">
-                {needOptions.map((n) => {
-                  const on = values.needs.includes(n);
-                  return (
-                    <label
-                      key={n}
-                      className={cn(
-                        "cursor-pointer rounded-full border px-3.5 py-2 text-sm transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-accent",
-                        on ? "border-accent bg-accent-soft font-medium text-accent" : "border-line hover:border-ink/25"
-                      )}
-                    >
-                      <input
-                        type="checkbox"
-                        name="needs"
-                        checked={on}
-                        onChange={() => set("needs", on ? values.needs.filter((x) => x !== n) : [...values.needs, n])}
-                        className="sr-only"
-                      />
-                      {n}
-                    </label>
-                  );
-                })}
-              </div>
-            </fieldset>
+            <div>
+              <label htmlFor="brief-service" className="mb-2 block text-sm font-medium">
+                Service you&apos;re interested in <span className="text-danger" aria-hidden="true">*</span>
+              </label>
+              <select
+                id="brief-service"
+                name="service"
+                required
+                value={values.service}
+                onChange={(e) => set("service", e.target.value)}
+                className="field cursor-pointer sm:max-w-md"
+                {...aria("service")}
+              >
+                <option value="">Choose one</option>
+                {categories.map((c) => (
+                  <optgroup key={c.key} label={c.name}>
+                    {servicesIn(c.key).map((s) => (
+                      <option key={s.slug} value={s.slug}>{s.name}</option>
+                    ))}
+                  </optgroup>
+                ))}
+                <option value={NOT_SURE}>Not sure yet</option>
+              </select>
+              {fieldError("service")}
+            </div>
             {choice("stage", "Stage", stages.map((s) => ({ value: s })))}
             {choice("budget", "Budget range", budgets.map((b) => ({ value: b.value, hint: international ? b.usd || undefined : undefined })))}
             {choice("timeline", "Timeline", timelines.map((t) => ({ value: t })))}
@@ -336,7 +339,7 @@ export default function BriefForm({
         {step === 2 && (
           <div className="space-y-5">
             <div>
-              <label htmlFor="brief-details" className="mb-2 block text-sm font-medium">Tell us what you&apos;re building <span className="text-danger" aria-hidden="true">*</span></label>
+              <label htmlFor="brief-details" className="mb-2 block text-sm font-medium">Tell us about your project <span className="text-danger" aria-hidden="true">*</span></label>
               <textarea
                 id="brief-details"
                 name="details"
@@ -345,7 +348,7 @@ export default function BriefForm({
                 value={values.details}
                 onChange={(e) => set("details", e.target.value)}
                 className="field resize-y"
-                placeholder={"Who is it for?\nWhat problem does it solve?\nWhat does success look like?"}
+                placeholder={"What are you building or growing?\nWho is it for?\nWhat does success look like?"}
                 {...aria("details")}
               />
               {fieldError("details")}
@@ -369,7 +372,7 @@ export default function BriefForm({
               {[
                 { key: "nda" as const, label: "Please send an NDA before we discuss details" },
                 { key: "callFirst" as const, label: "I'd like a 30-minute call first – send me some times" },
-                { key: "marketing" as const, label: "Send me occasional product-building insights (optional)" },
+                { key: "marketing" as const, label: "Send me occasional insights on growth and building products (optional)" },
               ].map((c) => (
                 <label key={c.key} className="flex cursor-pointer items-start gap-3 text-[0.9375rem]">
                   <input

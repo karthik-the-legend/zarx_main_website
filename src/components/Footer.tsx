@@ -2,7 +2,8 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 import { cta } from "@/lib/cta";
 import { facts } from "@/content/facts";
-import { services } from "@/content/services";
+import { categories } from "@/content/categories";
+import { serviceHref, servicesIn } from "@/content/services";
 import { hasWork } from "@/content/work";
 import { hasInsights } from "@/content/insights";
 import { Logo } from "@/components/ui/Logo";
@@ -17,39 +18,54 @@ const socialLabels: Record<keyof typeof facts.socials, string> = {
   behance: "Behance",
 };
 
+const linkClass = "text-sm text-night-muted transition-colors duration-fast hover:text-night-fg";
+
+function LinkList({ links }: { links: FooterLink[] }) {
+  return (
+    <ul className="mt-4 space-y-3">
+      {links.map((link) => (
+        <li key={link.label}>
+          {link.external ? (
+            <a href={link.href} className={`break-all ${linkClass}`}>
+              {link.label}
+            </a>
+          ) : (
+            <Link href={link.href} className={linkClass}>
+              {link.label}
+            </Link>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default function Footer() {
   const privacyEmail = facts.grievanceOfficer?.email ?? site.email;
-  const columns: { title: string; links: FooterLink[] }[] = [
-    { title: "Services", links: services.map((s) => ({ label: s.name, href: `/services/${s.slug}` })) },
-    {
-      title: "Company",
-      links: [
-        { label: "Why ZARX", href: "/why-zarx" },
-        { label: "Process", href: "/process" },
-        { label: "Investors & Partners", href: "/partners" },
-        { label: "Careers", href: "/careers" },
-      ],
-    },
-    {
-      title: "Resources",
-      links: [
-        ...(hasWork() ? [{ label: "Work", href: "/work" }] : []),
-        ...(hasInsights() ? [{ label: "Insights", href: "/insights" }] : []),
-        { label: "Solutions", href: "/solutions" },
-        { label: "FAQs", href: "/contact#faq" },
-        { label: "Trust Center", href: "/trust" },
-      ],
-    },
-    {
-      title: "Contact",
-      links: [
-        { label: site.email, href: `mailto:${site.email}`, external: true },
-        ...(facts.phone ? [{ label: facts.phone, href: `tel:${facts.phone.replace(/\s/g, "")}`, external: true }] : []),
-        ...(facts.whatsapp ? [{ label: "WhatsApp", href: `https://wa.me/${facts.whatsapp}`, external: true }] : []),
-        { label: `${site.location.city}, ${site.location.country}`, href: "/contact" },
-        { label: cta.book.short, href: cta.book.href },
-      ],
-    },
+  const serviceGroups = categories.map((c) => ({
+    title: c.name,
+    href: `/services/${c.slug}`,
+    links: servicesIn(c.key).map((s) => ({ label: s.name, href: serviceHref(s) })),
+  }));
+  const company: FooterLink[] = [
+    { label: "Why ZARX", href: "/why-zarx" },
+    { label: "Process", href: "/process" },
+    { label: "Investors & Partners", href: "/partners" },
+    { label: "Careers", href: "/careers" },
+  ];
+  const resources: FooterLink[] = [
+    ...(hasWork() ? [{ label: "Work", href: "/work" }] : []),
+    ...(hasInsights() ? [{ label: "Insights", href: "/insights" }] : []),
+    { label: "Solutions", href: "/solutions" },
+    { label: "FAQs", href: "/contact#faq" },
+    { label: "Trust Center", href: "/trust" },
+  ];
+  const contact: FooterLink[] = [
+    { label: site.email, href: `mailto:${site.email}`, external: true },
+    ...(facts.phone ? [{ label: facts.phone, href: `tel:${facts.phone.replace(/\s/g, "")}`, external: true }] : []),
+    ...(facts.whatsapp ? [{ label: "WhatsApp", href: `https://wa.me/${facts.whatsapp}`, external: true }] : []),
+    { label: `${site.location.city}, ${site.location.country}`, href: "/contact" },
+    { label: cta.book.short, href: cta.book.href },
   ];
   const legalParts = [
     site.legalName,
@@ -63,13 +79,13 @@ export default function Footer() {
     <footer className="on-dark border-t border-white/10 bg-night text-night-fg">
       <div className="container-page">
         <div className="grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8 lg:py-20">
-          <div className="sm:col-span-2 lg:col-span-4">
+          <div className="sm:col-span-2 lg:col-span-3">
             <Link href="/" aria-label="ZARX Technologies — home" className="inline-block">
               <Logo tone="light" className="w-[6.5rem]" />
             </Link>
             <p className="mt-6 max-w-xs text-sm leading-relaxed text-night-muted">{site.promise}</p>
             <p className="mt-2 max-w-xs text-sm leading-relaxed text-night-muted">
-              A founder-led product studio in {site.location.city}.
+              A founder-led consultancy in {site.location.city}.
             </p>
             {socials.length > 0 && (
               <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm">
@@ -84,26 +100,40 @@ export default function Footer() {
             )}
           </div>
 
-          {columns.map((column) => (
-            <nav key={column.title} aria-label={column.title} className="lg:col-span-2">
-              <h2 className="text-sm font-medium text-night-fg">{column.title}</h2>
-              <ul className="mt-4 space-y-3">
-                {column.links.map((link) => (
-                  <li key={link.label}>
-                    {link.external ? (
-                      <a href={link.href} className="break-all text-sm text-night-muted transition-colors duration-fast hover:text-night-fg">
-                        {link.label}
-                      </a>
-                    ) : (
-                      <Link href={link.href} className="text-sm text-night-muted transition-colors duration-fast hover:text-night-fg">
-                        {link.label}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
+          <nav aria-label="Services" className="sm:col-span-2 lg:col-span-5">
+            <h2 className="text-sm font-medium text-night-fg">Services</h2>
+            <div className="mt-4 grid gap-8 sm:grid-cols-2">
+              {serviceGroups.map((g) => (
+                <div key={g.title}>
+                  <h3>
+                    <Link
+                      href={g.href}
+                      className="text-xs font-semibold uppercase tracking-[0.12em] text-night-muted transition-colors duration-fast hover:text-night-fg"
+                    >
+                      {g.title}
+                    </Link>
+                  </h3>
+                  <LinkList links={g.links} />
+                </div>
+              ))}
+            </div>
+          </nav>
+
+          <div className="space-y-10 lg:col-span-2">
+            <nav aria-label="Company">
+              <h2 className="text-sm font-medium text-night-fg">Company</h2>
+              <LinkList links={company} />
             </nav>
-          ))}
+            <nav aria-label="Resources">
+              <h2 className="text-sm font-medium text-night-fg">Resources</h2>
+              <LinkList links={resources} />
+            </nav>
+          </div>
+
+          <nav aria-label="Contact" className="lg:col-span-2">
+            <h2 className="text-sm font-medium text-night-fg">Contact</h2>
+            <LinkList links={contact} />
+          </nav>
         </div>
 
         <div className="space-y-4 border-t border-white/10 py-6 text-xs text-night-muted">

@@ -1,16 +1,19 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { audiences } from "@/content/company";
+import type { CategoryKey } from "@/content/categories";
+import { cn } from "@/lib/utils";
 
 /** "Pick the line that sounds like you" cards, each linking to its best-fit pages. */
-export function AudienceCards({ showTypical = false }: { showTypical?: boolean }) {
+export function AudienceCards({ category, showTypical = false }: { category?: CategoryKey; showTypical?: boolean }) {
+  const items = category ? audiences.filter((a) => a.category === category) : audiences;
   return (
-    <ul className="grid gap-6 md:grid-cols-2">
-      {audiences.map((a, i) => (
+    <ul className={cn("grid gap-6 md:grid-cols-2", items.length === 4 && "xl:grid-cols-4")}>
+      {items.map((a, i) => (
         <li
-          key={a.who}
+          key={a.quote}
           data-reveal
-          style={{ "--reveal-delay": `${(i % 2) * 70}ms` } as CSSProperties}
+          style={{ "--reveal-delay": `${(i % 4) * 70}ms` } as CSSProperties}
           className="flex flex-col rounded-lg border border-line bg-canvas p-7 sm:p-8"
         >
           <a.icon aria-hidden="true" className="h-5 w-5 text-accent" strokeWidth={1.75} />

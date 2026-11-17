@@ -6,7 +6,8 @@ import { CircleCheck, CircleX, Info, MessageCircleWarning, Target } from "lucide
 import { absoluteUrl, site } from "@/lib/site";
 import { pageMetadata } from "@/lib/metadata";
 import { cta } from "@/lib/cta";
-import { getService, services } from "@/content/services";
+import { getService, serviceHref, services } from "@/content/services";
+import { categoryByKey } from "@/content/categories";
 import { withFacts } from "@/content/engagements";
 import { cases, hasWork } from "@/content/work";
 import { PageHero, type Crumb } from "@/components/ui/PageHero";
@@ -14,39 +15,75 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 import { ArrowLink, ButtonArrow, ButtonLink } from "@/components/ui/Button";
 import { CheckIcon, CheckList } from "@/components/ui/Lists";
 import { Timeline } from "@/components/ui/ProcessStrip";
+import { DraftTag } from "@/components/ui/Draft";
 import { JsonLd, breadcrumbLd } from "@/components/ui/JsonLd";
 import { EngagementCards } from "@/components/EngagementCards";
 import { FaqSection } from "@/components/FaqSection";
 import CTABanner from "@/components/CTABanner";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ category: string; slug: string }> };
 
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return services.map((service) => ({ slug: service.slug }));
+  return services.map((service) => ({ category: categoryByKey[service.category].slug, slug: service.slug }));
+}
+
+/** The service for this URL, only if it sits under the category in the URL. */
+async function resolve(params: Props["params"]) {
+  const { category, slug } = await params;
+  const service = getService(slug);
+  return service && categoryByKey[service.category].slug === category ? service : undefined;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const service = getService((await params).slug);
+  const service = await resolve(params);
   if (!service) return {};
   return pageMetadata({
     title: service.seoTitle,
     description: service.seoDescription,
-    path: `/services/${service.slug}`,
+    path: serviceHref(service),
     image: `/og/service-${service.slug}.png`,
   });
 }
 
+/** Section labels that differ between the two practices. */
+const labels = {
+  technology: {
+    capabilities: "What we build",
+    deliverablesLead: "Everything is yours at handover: in your repository, your accounts and your files.",
+    timelineNote: "A typical engagement, week by week. Your plan is confirmed in the Discovery Sprint.",
+    toolsEyebrow: "Technologies",
+    toolsTitle: "What we build with",
+    toolsNote: "We choose the stack that fits your product, not the other way round.",
+    qualityEyebrow: "Quality & security",
+    qualityTitle: "Standards this work ships with",
+  },
+  business: {
+    capabilities: "What we do",
+    deliverablesLead: "Everything we make for you is yours: reports, creative, contracts and account access.",
+    timelineNote: "A typical engagement, week by week. Your plan is confirmed in the first step.",
+    toolsEyebrow: "Platforms & tools",
+    toolsTitle: "Platforms and tools we work with",
+    toolsNote: "We work on the platforms your customers use and the tools your team already has.",
+    qualityEyebrow: "Reporting & measurement",
+    qualityTitle: "How we measure and report",
+  },
+};
+
 export default async function ServicePage({ params }: Props) {
-  const service = getService((await params).slug);
+  const service = await resolve(params);
   if (!service) notFound();
 
-  const path = `/services/${service.slug}`;
+  const category = categoryByKey[service.category];
+  const text = labels[service.category];
+  const draft = service.draft ?? false;
+  const path = serviceHref(service);
   const discussHref = `/contact?service=${service.slug}#estimate`;
   const crumbs: Crumb[] = [
     { label: "Home", href: "/" },
-    { label: "Solutions", href: "/solutions" },
+    { label: "Services", href: "/solutions" },
+    { label: category.name, href: `/services/${category.slug}` },
     { label: service.name },
   ];
   const featured = cases.find((c) => c.services.includes(service.slug));
@@ -59,6 +96,7 @@ export default async function ServicePage({ params }: Props) {
         eyebrow={service.name}
         title={service.headline}
         lead={service.subhead}
+        draft={draft}
         after={
           <ul className="flex flex-col gap-x-6 gap-y-2.5 text-sm text-muted sm:flex-row sm:flex-wrap">
             {service.proof.map((p) => (
@@ -74,7 +112,7 @@ export default async function ServicePage({ params }: Props) {
           Discuss your project
           <ButtonArrow />
         </ButtonLink>
-        {hasWork() ? (
+        {hasWork() && cases.some((c) => c.services.includes(service.slug)) ? (
           <ButtonLink href={`/work?service=${service.slug}`} size="lg" variant="secondary" data-cta={`service_work_${service.slug}`}>
             See {service.name} work
           </ButtonLink>
@@ -87,7 +125,7 @@ export default async function ServicePage({ params }: Props) {
 
       {/* 2. Sound familiar? */}
       <Section tone="subtle" labelledBy="pains-title">
-        <SectionHeading id="pains-title" eyebrow="Sound familiar?" title="The problems we hear most" align="start" />
+        <SectionHeading id="pains-title" eyebrow="Sound familiar?" title="The problems we hear most" align="start" draft={draft} />
         <ul className="grid gap-6 md:grid-cols-3">
           {service.pains.map((pain, i) => (
             <li
@@ -105,7 +143,7 @@ export default async function ServicePage({ params }: Props) {
 
       {/* 3. Outcomes */}
       <Section labelledBy="outcomes-title">
-        <SectionHeading id="outcomes-title" eyebrow="Outcomes" title="What changes for you" align="start" />
+        <SectionHeading id="outcomes-title" eyebrow="Outcomes" title="What changes for you" align="start" draft={draft} />
         <ul className="grid gap-x-10 gap-y-10 md:grid-cols-3">
           {service.outcomes.map((outcome, i) => (
             <li
@@ -123,7 +161,7 @@ export default async function ServicePage({ params }: Props) {
 
       {/* 4. Capabilities */}
       <Section tone="subtle" labelledBy="capabilities-title">
-        <SectionHeading id="capabilities-title" eyebrow="Capabilities" title="What we build" />
+        <SectionHeading id="capabilities-title" eyebrow="Capabilities" title={text.capabilities} draft={draft} />
         <ul className="grid gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
           {service.capabilities.map((c, i) => (
             // Reveal the content, not the cell, so the grid lines never show through.
@@ -173,9 +211,12 @@ export default async function ServicePage({ params }: Props) {
       <Section labelledBy="deliverables-title">
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
           <header data-reveal className="lg:col-span-4">
-            <p className="eyebrow mb-4">Deliverables</p>
+            <p className="eyebrow mb-4">
+              Deliverables
+              {draft && <DraftTag />}
+            </p>
             <h2 id="deliverables-title" className="text-h2">What you walk away with</h2>
-            <p className="mt-5 text-lead text-muted">Everything is yours at handover: in your repository, your accounts and your files.</p>
+            <p className="mt-5 text-lead text-muted">{text.deliverablesLead}</p>
           </header>
           <div data-reveal className="lg:col-span-8">
             <CheckList items={service.deliverables} className="grid gap-x-10 gap-y-3.5 space-y-0 sm:grid-cols-2" />
@@ -190,14 +231,15 @@ export default async function ServicePage({ params }: Props) {
           tone="dark"
           eyebrow="Timeline"
           title={service.timeline.title}
-          description="A typical engagement, week by week. Your plan is confirmed in the Discovery Sprint."
+          description={text.timelineNote}
+          draft={draft}
         />
         <Timeline tone="dark" steps={service.timeline.steps.map((s) => ({ meta: s.when, title: withFacts(s.what) }))} />
       </Section>
 
-      {/* 8. Technologies */}
+      {/* 8. Technologies, or platforms and tools */}
       <Section labelledBy="tech-title">
-        <SectionHeading id="tech-title" eyebrow="Technologies" title="What we build with" description="We choose the stack that fits your product, not the other way round." />
+        <SectionHeading id="tech-title" eyebrow={text.toolsEyebrow} title={text.toolsTitle} description={text.toolsNote} draft={draft} />
         <dl className="grid gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
           {service.tech.map((group) => (
             <div key={group.group} className="bg-canvas p-6">
@@ -214,13 +256,19 @@ export default async function ServicePage({ params }: Props) {
 
       {/* 9. Ways to start */}
       <Section tone="subtle" labelledBy="start-title">
-        <SectionHeading id="start-title" eyebrow="Ways to start" title="Pick the size of the first step" description="Each option has a fixed scope and a fixed quote." />
+        <SectionHeading
+          id="start-title"
+          eyebrow="Ways to start"
+          title="Pick the size of the first step"
+          description="Each option has a fixed scope and a fixed quote."
+          draft={draft}
+        />
         <EngagementCards ids={service.engagements} service={service.slug} />
       </Section>
 
       {/* 10. Right fit / not a fit */}
       <Section labelledBy="fit-title">
-        <SectionHeading id="fit-title" eyebrow="Right fit" title="Are we right for this?" align="start" />
+        <SectionHeading id="fit-title" eyebrow="Right fit" title="Are we right for this?" align="start" draft={draft} />
         <div className="grid gap-6 md:grid-cols-2">
           <div data-reveal className="rounded-lg border border-line p-7 sm:p-8">
             <h3 className="text-h3">Great fit if you…</h3>
@@ -247,12 +295,15 @@ export default async function ServicePage({ params }: Props) {
         </div>
       </Section>
 
-      {/* 11. Quality & security */}
+      {/* 11. Quality & security, or reporting & measurement */}
       <Section tone="subtle" labelledBy="quality-title">
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
           <header data-reveal className="lg:col-span-4">
-            <p className="eyebrow mb-4">Quality & security</p>
-            <h2 id="quality-title" className="text-h2">Standards this work ships with</h2>
+            <p className="eyebrow mb-4">
+              {text.qualityEyebrow}
+              {draft && <DraftTag />}
+            </p>
+            <h2 id="quality-title" className="text-h2">{text.qualityTitle}</h2>
           </header>
           <div data-reveal className="space-y-8 lg:col-span-8">
             <CheckList items={service.quality} className="grid gap-x-10 gap-y-3.5 space-y-0 sm:grid-cols-2" />
@@ -263,6 +314,11 @@ export default async function ServicePage({ params }: Props) {
                   <p className="font-semibold text-ink">{service.note.title}</p>
                   <p className="mt-1">{service.note.text}</p>
                   {service.note.source && <p className="mt-2 text-xs">Source: {service.note.source}</p>}
+                  {service.note.link && (
+                    <ArrowLink href={service.note.link.href} className="mt-3">
+                      {service.note.link.label}
+                    </ArrowLink>
+                  )}
                 </div>
               </aside>
             )}
@@ -272,7 +328,7 @@ export default async function ServicePage({ params }: Props) {
 
       {/* 12. FAQ */}
       <FaqSection
-        items={service.faqs}
+        items={service.faqs.map((f) => ({ ...f, draft: f.draft ?? draft }))}
         title="Common questions"
         intro={
           <>
@@ -289,7 +345,7 @@ export default async function ServicePage({ params }: Props) {
           {related.map((r) => (
             <li key={r.slug}>
               <Link
-                href={`/services/${r.slug}`}
+                href={serviceHref(r)}
                 className="group/link flex h-full flex-col rounded-lg border border-line bg-canvas p-7 transition-colors hover:border-ink/20"
               >
                 <r.icon aria-hidden="true" className="h-5 w-5 text-accent" strokeWidth={1.75} />
@@ -304,7 +360,7 @@ export default async function ServicePage({ params }: Props) {
         </ul>
       </Section>
 
-      <CTABanner headline={service.ctaHeadline} />
+      <CTABanner headline={service.ctaHeadline} service={service.slug} />
 
       <JsonLd
         data={{
@@ -314,6 +370,7 @@ export default async function ServicePage({ params }: Props) {
               "@type": "Service",
               name: service.name,
               serviceType: service.name,
+              category: category.name,
               description: service.subhead,
               url: absoluteUrl(path),
               provider: { "@type": "Organization", "@id": `${site.url}/#organization`, name: site.legalName, url: site.url },

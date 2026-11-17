@@ -96,12 +96,12 @@ export default function CareersPage() {
               subject="Careers – work submission"
               event="careers_form_submit"
               submitLabel="Send my work"
-              notice={`We use these details only to consider you for a role at ZARX and to reply to you. Ask us to delete them anytime at ${facts.grievanceOfficer?.email ?? site.email}.`}
+              notice={`We use these details only to consider you for a role at ZARX and to reply to you. Ask us to delete them anytime at ${site.careersEmail}.`}
               successText="Thanks – we'll look at your work and reply."
               fields={[
                 { name: "name", label: "Your name", required: true, autoComplete: "name" },
                 { name: "email", label: "Email", type: "email", required: true, autoComplete: "email" },
-                { name: "discipline", label: "Discipline", type: "select", required: true, options: ["Engineering", "Design", "AI", "Games", "Animation", "Other"] },
+                { name: "discipline", label: "Discipline", type: "select", required: true, options: ["Engineering", "Design", "AI", "Games", "Animation", "Marketing", "Partnerships & fundraising", "Other"] },
                 { name: "portfolio", label: "Link to your work", type: "url", required: true, placeholder: "GitHub, portfolio, Behance, store link…" },
                 { name: "message", label: "What do you want to build next?", type: "textarea" },
               ]}

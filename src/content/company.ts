@@ -11,12 +11,14 @@ import {
   FlaskConical,
   Gamepad2,
   GitBranch,
+  HandCoins,
   Handshake,
   KanbanSquare,
   KeyRound,
   Layers,
   LifeBuoy,
   Lightbulb,
+  Megaphone,
   MessagesSquare,
   Network,
   Rocket,
@@ -29,13 +31,22 @@ import {
 } from "lucide-react";
 import { facts } from "@/content/facts";
 import { withFacts } from "@/content/engagements";
+import type { CategoryKey } from "@/content/categories";
+import { getService, serviceHref } from "@/content/services";
 
-type Faq = { question: string; answer: string };
+type Faq = { question: string; answer: string; draft?: boolean };
 const present = <T,>(items: (T | null | false)[]) => items.filter(Boolean) as T[];
 
-/* ─── Audiences ("Who we build for") ───────────────────────────── */
+/** Link to a service page under its category, e.g. svc("web3", "Web3 Products"). */
+const svc = (slug: string, label?: string) => {
+  const service = getService(slug)!;
+  return { label: label ?? service.name, href: serviceHref(service) };
+};
+
+/* ─── Audiences ("Find your starting point") ───────────────────── */
 
 export const audiences: {
+  category: CategoryKey;
   icon: LucideIcon;
   quote: string;
   who: string;
@@ -43,18 +54,54 @@ export const audiences: {
   typical: string;
   links: { label: string; href: string }[];
 }[] = [
+  // Business options are drafts awaiting ZARX sign-off.
   {
+    category: "business",
+    icon: Megaphone,
+    quote: "We need more customers and visibility",
+    who: "Growing brands",
+    text: "Turn marketing spend into customers you can trace to a channel.",
+    typical: "Typical project: a Growth Audit, then a Campaign Sprint.",
+    links: [svc("digital-marketing"), svc("influencer-marketing")],
+  },
+  {
+    category: "business",
+    icon: HandCoins,
+    quote: "We need funding or sponsors",
+    who: "Founders & organisers",
+    text: "Make a strong case and put it in front of the right people.",
+    typical: "Typical project: a Raise Readiness Sprint or a Sponsorship Kit.",
+    links: [svc("fundraising-sponsorship", "Fundraising & Sponsorship")],
+  },
+  {
+    category: "business",
+    icon: Users,
+    quote: "We want creators to talk about us",
+    who: "Consumer brands",
+    text: "Reach real, relevant audiences through vetted creators.",
+    typical: "Typical project: a Creator Shortlist, then a Creator Pilot.",
+    links: [svc("influencer-marketing")],
+  },
+  {
+    category: "business",
+    icon: Handshake,
+    quote: "We want the right brand collaborations",
+    who: "Brands",
+    text: "Partner with brands your customers already trust.",
+    typical: "Typical project: Partner Mapping, then a Partnership Deal.",
+    links: [svc("brand-partnerships")],
+  },
+  {
+    category: "technology",
     icon: Lightbulb,
     quote: "I have an idea and a deadline",
     who: "Founders",
     text: "Test the idea with real users before you spend your runway.",
     typical: "Typical project: a Discovery Sprint, then an MVP Build.",
-    links: [
-      { label: "Web Platforms", href: "/services/web-platforms" },
-      { label: "UI/UX Design", href: "/services/ui-ux-design" },
-    ],
+    links: [svc("web-platforms"), svc("ui-ux-design")],
   },
   {
+    category: "technology",
     icon: Rocket,
     quote: "We're funded and behind on the roadmap",
     who: "Startups",
@@ -66,23 +113,22 @@ export const audiences: {
     ],
   },
   {
+    category: "technology",
     icon: Bot,
     quote: "We need AI that actually works",
     who: "Businesses",
     text: "Turn one costly manual workflow into a measured AI pilot.",
     typical: "Typical project: an AI Opportunity Workshop, then a 4-week AI Pilot.",
-    links: [{ label: "AI Builders & Automation", href: "/services/ai-automation" }],
+    links: [svc("ai-automation")],
   },
   {
+    category: "technology",
     icon: Gamepad2,
     quote: "We're building a game or on-chain product",
     who: "Game & Web3 teams",
     text: "Specialists in Unity, real-time multiplayer and audit-ready smart contracts.",
     typical: "Typical project: a Playable Prototype or a Web3 Feasibility Sprint.",
-    links: [
-      { label: "Mobile & Gaming", href: "/services/mobile-gaming" },
-      { label: "Web3 Products", href: "/services/web3" },
-    ],
+    links: [svc("mobile-gaming", "Mobile & Gaming"), svc("web3")],
   },
 ];
 
@@ -108,14 +154,53 @@ export const peopleDecide = [
 
 export const goals: {
   id: string;
+  category: CategoryKey;
   goal: string;
   services: string[];
   team: string;
   timeline: string;
   engagement: string;
 }[] = [
+  // Business goals are drafts awaiting ZARX sign-off.
+  {
+    id: "customers",
+    category: "business",
+    goal: "Get more customers",
+    services: ["digital-marketing", "influencer-marketing"],
+    team: "A growth lead with paid-ads, SEO and content specialists, plus a creator manager if creators suit your audience.",
+    timeline: "4–6 week campaign, then monthly",
+    engagement: "campaign-sprint",
+  },
+  {
+    id: "funding",
+    category: "business",
+    goal: "Raise funds or find sponsors",
+    services: ["fundraising-sponsorship", "brand-partnerships"],
+    team: "A fundraising lead who shapes your story and material, with a designer for the deck and sponsor packages.",
+    timeline: "2–3 weeks to prepare, then 8–12 weeks of outreach",
+    engagement: "raise-readiness",
+  },
+  {
+    id: "creators",
+    category: "business",
+    goal: "Run influencer campaigns",
+    services: ["influencer-marketing", "digital-marketing"],
+    team: "A creator manager who finds, vets and briefs creators, with a performance marketer for tracking and boosting.",
+    timeline: "3–4 week pilot, then monthly",
+    engagement: "creator-pilot",
+  },
+  {
+    id: "partners",
+    category: "business",
+    goal: "Build brand partnerships",
+    services: ["brand-partnerships", "influencer-marketing"],
+    team: "A partnerships lead who maps, pitches and structures deals, with marketing support for the launch.",
+    timeline: "4–8 weeks per partnership",
+    engagement: "partnership-deal",
+  },
   {
     id: "launch",
+    category: "technology",
     goal: "Launch my first product",
     services: ["ui-ux-design", "web-platforms", "ai-automation"],
     team: "A product designer and web engineers, led by a senior lead, with AI specialists if your product needs them.",
@@ -124,6 +209,7 @@ export const goals: {
   },
   {
     id: "ai",
+    category: "technology",
     goal: "Add AI to a product or workflow",
     services: ["ai-automation", "web-platforms"],
     team: "AI engineers who design, evaluate and secure the workflow, with a web engineer for the interface.",
@@ -132,6 +218,7 @@ export const goals: {
   },
   {
     id: "mobile",
+    category: "technology",
     goal: "Launch a mobile app or game",
     services: ["mobile-gaming", "ui-ux-design", "animation"],
     team: "App or Unity engineers and a game-UI designer, with an animator for store trailers.",
@@ -140,6 +227,7 @@ export const goals: {
   },
   {
     id: "web3",
+    category: "technology",
     goal: "Build on-chain",
     services: ["web3", "web-platforms", "ui-ux-design"],
     team: "Smart-contract engineers, a web engineer for the dApp and a designer for onboarding.",
@@ -148,6 +236,7 @@ export const goals: {
   },
   {
     id: "fix",
+    category: "technology",
     goal: "Fix a product users find confusing",
     services: ["ui-ux-design"],
     team: "A UX researcher and product designer, working with your developers.",
@@ -156,6 +245,7 @@ export const goals: {
   },
   {
     id: "explain",
+    category: "technology",
     goal: "Explain or sell my product visually",
     services: ["animation"],
     team: "A motion designer and 3D artist, with a scriptwriter for explainers.",
@@ -166,6 +256,11 @@ export const goals: {
 
 /** Comparison table rows: timeline and lead engagement per service. */
 export const serviceComparison: Record<string, { bestFor: string; timeline: string; engagement: string }> = {
+  // Business rows are drafts awaiting ZARX sign-off.
+  "digital-marketing": { bestFor: "More customers from search, ads and social", timeline: "4–6 week campaign, then monthly", engagement: "campaign-sprint" },
+  "influencer-marketing": { bestFor: "Creator campaigns with tracked results", timeline: "3–6 weeks per campaign", engagement: "creator-pilot" },
+  "fundraising-sponsorship": { bestFor: "Pitch material, sponsors and introductions", timeline: "2–3 weeks prep, 8–12 weeks outreach", engagement: "raise-readiness" },
+  "brand-partnerships": { bestFor: "Co-branding and collaboration deals", timeline: "4–8 weeks per partnership", engagement: "partnership-deal" },
   "web-platforms": { bestFor: "SaaS, marketplaces, dashboards", timeline: "8–10 weeks (MVP)", engagement: "web-mvp" },
   "mobile-gaming": { bestFor: "iOS, Android apps and casual games", timeline: "10–16 weeks", engagement: "app-mvp" },
   web3: { bestFor: "Smart contracts, dApps, wallets", timeline: "8–12 weeks + audit", engagement: "build-to-audit" },
@@ -185,9 +280,43 @@ export const inclusions: { icon: LucideIcon; text: string }[] = [
   { icon: LifeBuoy, text: withFacts("{FreeFix}") },
 ];
 
+/** Draft, awaiting ZARX sign-off. */
+export const businessInclusions: { icon: LucideIcon; text: string }[] = [
+  { icon: UserCheck, text: "A senior lead who owns your account" },
+  { icon: ClipboardCheck, text: "Goals and measures agreed before any spend" },
+  { icon: KeyRound, text: "Ad, social and analytics accounts in your name" },
+  { icon: CalendarCheck, text: "A weekly update and a monthly report" },
+  { icon: Eye, text: "Reports with the raw numbers, not just highlights" },
+  { icon: ShieldCheck, text: "Disclosure and consent rules followed on every campaign" },
+  { icon: FileLock2, text: "Contracts signed in your company's name" },
+  { icon: Handshake, text: "Introductions made only with your approval" },
+];
+
 /* ─── Why ZARX ─────────────────────────────────────────────────── */
 
 export const reasons: { icon: LucideIcon; title: string; claim: string; proof: string | null; forYou: string }[] = [
+  // The first three (business side) are drafts awaiting ZARX sign-off.
+  {
+    icon: UsersRound,
+    title: "One team for growth and technology",
+    claim: "Marketing, partnerships, design and engineering work from one plan.",
+    proof: null,
+    forYou: "No hand-offs between agencies, and one person accountable.",
+  },
+  {
+    icon: Eye,
+    title: "Reporting you can check",
+    claim: "Goals agreed up front, and monthly reports with the raw numbers behind them.",
+    proof: null,
+    forYou: "You always know what your money did.",
+  },
+  {
+    icon: FileLock2,
+    title: "Accounts and contracts in your name",
+    claim: "Ad accounts, creator contracts and partner deals sit with your company, not with us.",
+    proof: null,
+    forYou: "Nothing to untangle if you ever move on.",
+  },
   {
     icon: Sparkles,
     title: "AI-accelerated delivery pipeline",
@@ -262,6 +391,14 @@ export const commitments: string[] = [
   "Leave anytime with a complete handover",
 ];
 
+/** Business-side contract promises. Draft, awaiting ZARX sign-off. */
+export const businessCommitments: string[] = [
+  "Goals and measures agreed in writing before any marketing spend",
+  "Ad, social and analytics accounts opened in your company's name",
+  "Every sponsored post labelled as advertising",
+  "Monthly reports with the numbers behind them",
+];
+
 export const wontDo = [
   "Start building before we agree what success looks like",
   "Hide junior staff behind a senior pitch",
@@ -269,9 +406,16 @@ export const wontDo = [
   "Build real-money gambling products or token schemes without a product",
 ];
 
+/** Business-side limits. Draft, awaiting ZARX sign-off. */
+export const businessWontDo = [
+  "Buy followers, reviews or fake engagement",
+  "Promise that an investor or sponsor will commit",
+  "Run sponsored posts without clear disclosure",
+];
+
 export const principles: { icon: LucideIcon; title: string; text: string }[] = [
-  { icon: UsersRound, title: "One accountable team", text: "Strategy, design, engineering and AI under one roof – no hand-offs between agencies." },
-  { icon: Eye, title: "Progress you can see", text: "Working software every week instead of status reports." },
+  { icon: UsersRound, title: "One accountable team", text: "Strategy, marketing, partnerships, design, engineering and AI under one roof – no hand-offs between agencies." },
+  { icon: Eye, title: "Progress you can see", text: "Working software or live campaign numbers every week, instead of status reports." },
   { icon: ClipboardCheck, title: "Clear scope and milestones", text: "A written plan before build starts, and early warnings if anything needs to change." },
   { icon: KeyRound, title: "You own what we build", text: "Code, designs and documentation are yours, so you're never locked in." },
 ];
@@ -342,6 +486,15 @@ export const processSteps: {
     role: "Share business priorities so we focus on what moves your numbers.",
     gate: null,
   },
+];
+
+/** The Business Consultancy equivalent of the five stages. Draft, awaiting ZARX sign-off. */
+export const businessSteps: { key: string; title: string; duration: string; text: string }[] = [
+  { key: "audit", title: "Audit", duration: "1–2 weeks", text: "Where you stand: channels, audience, numbers and competitors." },
+  { key: "strategy", title: "Strategy", duration: "1–2 weeks", text: "Goals, budget, channels and the measures we'll report on." },
+  { key: "launch", title: "Launch", duration: "2–6 weeks", text: "Campaigns, creators, outreach or partner deals go live." },
+  { key: "measure", title: "Measure", duration: "Every week", text: "Weekly updates and a monthly report against the goals." },
+  { key: "grow", title: "Grow", duration: "Ongoing", text: "Scale what works, stop what doesn't, add new channels." },
 ];
 
 export const communication: { icon: LucideIcon; title: string; text: string }[] = [
@@ -488,6 +641,31 @@ export const homeFaqs: Faq[] = [
       "Every build includes {freeFix} for bugs in what we delivered. After that you choose: an optional monthly retainer for monitoring, analytics, new features and AI improvements, or a clean handover to your own team with documentation, credentials and a recorded walkthrough. Either way, you get a recommended roadmap based on real usage."
     ),
   },
+  // Business-side questions: drafts until ZARX supplies the final ones.
+  {
+    question: "What does your business consultancy cover?",
+    answer:
+      "Four services: digital marketing, influencer marketing, fundraising and sponsorship partnerships, and brand partnerships. You can use one or combine them, and pair them with our technology services when growth needs a new website, app or product.",
+    draft: true,
+  },
+  {
+    question: "Do you guarantee sales, followers or funding?",
+    answer:
+      "No honest consultant can. We agree goals and measures with you up front, report against them every month, and tell you early when something isn't working – with a plan to change it.",
+    draft: true,
+  },
+  {
+    question: "Who owns the ad accounts, content and contracts?",
+    answer:
+      "You do. Ad, social and analytics accounts are opened in your company's name, creator and partner contracts are signed by you, and content we produce for you is yours on payment.",
+    draft: true,
+  },
+  {
+    question: "Can one team handle our marketing and our product?",
+    answer:
+      "Yes – that's why both practices sit under one roof. One lead coordinates the plan, so a campaign, a landing page and an app update ship together instead of waiting on separate agencies.",
+    draft: true,
+  },
 ];
 
 export const solutionsFaqs: Faq[] = [
@@ -589,7 +767,7 @@ export const contactFaqs: Faq[] = [
   {
     question: "Is the first call really free, and what will we cover?",
     answer:
-      "Yes, it's free and there's no obligation. In 30 minutes we'll understand what you're building, who it's for and what success looks like, ask about timeline and budget, and tell you honestly whether we're a good fit. If we are, we suggest a first step – usually a Discovery Sprint – with a rough timeline and budget range.",
+      "Yes, it's free and there's no obligation. In 30 minutes we'll understand what you're building, who it's for and what success looks like, ask about timeline and budget, and tell you honestly whether we're a good fit. If we are, we suggest a first step – usually a Discovery Sprint or a Growth Audit – with a rough timeline and budget range.",
   },
   {
     question: "What should I prepare before the call?",
@@ -614,7 +792,8 @@ export const contactFaqs: Faq[] = [
   {
     question: "What's the smallest project you take on?",
     answer:
-      "Our smallest engagements are focused sprints: a 2-day AI Opportunity Workshop, a one-week Rescue Audit of an existing web product, a 1–2 week UX Audit or a 1–2 week UI Motion Pack. They're a low-risk way to work together, and each ends with something useful you keep whether or not you continue.",
+      "Our smallest engagements are focused sprints. On the technology side: a 2-day AI Opportunity Workshop, a one-week Rescue Audit of an existing web product, a 1–2 week UX Audit or a 1–2 week UI Motion Pack. On the business side: a one-week Creator Shortlist, a 1–2 week Growth Audit or Partner Mapping, or a two-week Sponsorship Kit. Each ends with something useful you keep whether or not you continue.",
+    draft: true,
   },
   {
     question: "How do payments work – INR and international?",

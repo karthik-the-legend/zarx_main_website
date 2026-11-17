@@ -7,8 +7,10 @@ import { buttonStyles, ButtonArrow } from "@/components/ui/Button";
 
 export type RouterGoal = {
   id: string;
+  /** "Business" or "Technology", shown on the tab. */
+  category: string;
   goal: string;
-  services: { slug: string; name: string }[];
+  services: { slug: string; name: string; href: string }[];
   team: string;
   timeline: string;
   price: string;
@@ -52,12 +54,15 @@ export function GoalRouter({ goals }: { goals: RouterGoal[] }) {
             onClick={() => setActive(i)}
             onKeyDown={(e) => onKey(e, i)}
             className={cn(
-              "flex items-center justify-between rounded-md border px-5 py-4 text-left text-[0.9375rem] font-medium transition-colors duration-fast",
+              "flex items-center justify-between gap-4 rounded-md border px-5 py-4 text-left text-[0.9375rem] font-medium transition-colors duration-fast",
               i === active ? "border-accent bg-accent-soft text-ink" : "border-line bg-canvas text-ink hover:border-ink/20"
             )}
           >
-            “{g.goal}”
-            <span aria-hidden="true" className={cn("text-muted", i === active && "text-accent")}>→</span>
+            <span>“{g.goal}”</span>
+            <span className="flex shrink-0 items-center gap-3">
+              <span className="rounded-full bg-subtle px-2 py-0.5 text-xs font-medium text-muted">{g.category}</span>
+              <span aria-hidden="true" className={cn("text-muted", i === active && "text-accent")}>→</span>
+            </span>
           </button>
         ))}
       </div>
@@ -73,7 +78,7 @@ export function GoalRouter({ goals }: { goals: RouterGoal[] }) {
           {goal.services.map((s) => (
             <li key={s.slug}>
               <Link
-                href={`/services/${s.slug}`}
+                href={s.href}
                 className="inline-flex rounded-full border border-accent/30 bg-accent-soft px-3.5 py-1.5 text-sm font-medium text-accent transition-colors hover:border-accent"
               >
                 {s.name}

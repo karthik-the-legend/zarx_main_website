@@ -1,8 +1,8 @@
 # ZARX Technologies — Website
 
-> **From Idea to Reality — We Build Digital Experiences That Scale.**
+> **Business growth and technology, under one roof.**
 
-The official website for **ZARX Technologies Pvt. Ltd.**, a next-generation technology and gaming IP company based in New Delhi, India.
+The official website for **ZARX Technologies Pvt. Ltd.**, a business and technology consultancy based in New Delhi, India. The site presents two practices: **Business Consultancy** (digital marketing, influencer marketing, fundraising & sponsorship partnerships, brand partnerships) and **Technology Consultancy** (web platforms, mobile & gaming apps, Web3, AI automation, UI/UX, animation).
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
@@ -51,6 +51,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 npm run build   # static export to ./out (plus scripts/flatten-segment-data.mjs)
 npm start       # preview ./out locally at http://localhost:3000
 npm run deploy  # build and publish to Firebase Hosting
+npm run deploy:staging  # build with draft markers and publish to a private preview link
 ```
 
 ## Project Structure
@@ -61,19 +62,22 @@ src/
 │   ├── layout.tsx                 # Header, footer, skip link, scroll reveals, analytics events
 │   ├── page.tsx                   # Home
 │   ├── solutions/                 # Goal router, service comparison, what's always included
-│   ├── services/[slug]/           # Six service pages (one template, data in content/services.ts)
+│   ├── services/[category]/       # Business and Technology Consultancy landing pages
+│   ├── services/[category]/[slug]/ # Ten service pages (one template, data in content/services.ts and business-services.ts)
 │   ├── why-zarx/ process/ partners/ contact/ careers/
 │   ├── work/ work/[slug]/         # Case studies (hidden from nav until content/work.ts has entries)
 │   ├── insights/ insights/[slug]/ # Articles (hidden from nav until content/insights.ts has entries)
 │   ├── privacy/ terms/ cookies/ trust/
 │   ├── not-found.tsx, error.tsx   # 404 and error pages
 │   └── robots.ts, sitemap.ts, icon.png, apple-icon.png
-├── content/                       # All copy: facts, services, company, engagements, work, insights, careers
+├── content/                       # All copy: facts, categories, services, business-services, company, engagements, work, insights, careers
 ├── components/                    # Page sections and shared blocks (Navbar, Footer, CTABanner, forms, cards)
 │   └── ui/                        # Primitives: Button, Section, PageHero, Lists, ProcessStrip, TrustStrip, JsonLd
 └── lib/                           # site, cta, metadata, analytics, submit (form delivery), utils
 scripts/
 ├── flatten-segment-data.mjs       # Post-build fix for static hosting (runs automatically)
+├── deploy-staging.mjs             # Staging build (draft markers, noindex) and preview-channel deploy
+├── guard-production.mjs           # Firebase predeploy hook: blocks a staging build from going live
 └── make-og-images.py              # Regenerates the share images in public/og/
 ```
 
@@ -94,12 +98,16 @@ Set `NEXT_PUBLIC_SITE_URL` (e.g. `https://zarxtechnologies.com`) so canonical UR
 robots.txt, Open Graph images and structured data use the production domain.
 
 ### Contact Form
-There is no backend yet. Submitting validates the form and opens the visitor's email app with the
-enquiry addressed to `site.email`. To post to an API or a service such as Resend or Formspree,
-replace `deliver()` in `src/components/ContactForm.tsx`.
+Forms post to Web3Forms with `facts.web3formsKey` (see `src/lib/submit.ts`); without a key they open the
+visitor's email app addressed to `site.email`. Every project brief's subject starts with the team it belongs
+to – `[Business Consultancy]`, `[Technology Consultancy]` or `[Not sure yet]` – from the service the visitor
+picked, so the inbox can filter them.
 
 ### Business details
-Email, location and other facts live in `src/lib/site.ts`. Page copy lives in `src/content/`; adding a service to `services.ts` creates its page, footer link, sitemap entry and contact-form topic automatically.
+Email, location and other facts live in `src/lib/site.ts`. Page copy lives in `src/content/`; adding a service to `services.ts` or `business-services.ts` (with its `category`) creates its page under `/services/<category>/<slug>/`, its menu, footer and sitemap entries and its contact-form option automatically.
+
+### Draft copy and staging
+Copy still waiting for sign-off is flagged with `draft: true` in the content files (or the `draft` prop on `SectionHeading` / `PageHero`). Staging builds (`npm run deploy:staging`) show a “Draft copy” tag on it, block search engines and publish to a Firebase preview channel. Production builds hide the tags. Remove the flags once final copy is in.
 
 ## Facts only the founders can supply
 
@@ -130,8 +138,11 @@ One-time setup:
 Deploy (also how you publish every update):
 
 ```bash
-npm run deploy   # = npm run build && firebase deploy --only hosting
+npm run deploy           # = npm run build && firebase deploy --only hosting
+npm run deploy:staging   # private preview link for review; never touches the live site
 ```
+
+A staging build leaves a marker in `out/`; `firebase.json` runs `scripts/guard-production.mjs` before every deploy and refuses to publish it to production.
 
 Custom domain: Firebase console → **Hosting → Add custom domain** → `zarxtechnologies.com`. Add the TXT and A records it shows in Hostinger hPanel (**Domains → DNS / Nameservers**), removing Hostinger's old parking A records for `@` and `www`. Add `www.zarxtechnologies.com` too, set to redirect to the main domain. HTTPS is issued automatically (allow up to 24 hours).
 

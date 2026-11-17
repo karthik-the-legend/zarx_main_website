@@ -1,16 +1,19 @@
 import type { CSSProperties } from "react";
 import { Clock3, FileLock2, Gauge } from "lucide-react";
 import { facts } from "@/content/facts";
+import { categories } from "@/content/categories";
+import { servicesIn } from "@/content/services";
 import { cta, secondaryCta } from "@/lib/cta";
 import { ButtonArrow, ButtonLink } from "@/components/ui/Button";
+import { DraftTag } from "@/components/ui/Draft";
 
-const stages = [
-  { title: "Idea", detail: "Scope, users and success metrics", ai: false },
-  { title: "Design", detail: "Flows, UI and user tests", ai: true },
-  { title: "Build", detail: "Weekly sprints and live demos", ai: true },
-  { title: "Launch", detail: "Security review, release, monitoring", ai: false },
-  { title: "Scale", detail: "Analytics, new features, live ops", ai: false },
-];
+/** Shorter names so the decorative card stays compact. */
+const shortNames: Record<string, string> = {
+  "fundraising-sponsorship": "Fundraising & Sponsorship",
+  "mobile-gaming": "Mobile & Games",
+  "ai-automation": "AI & Automation",
+  "animation": "Animation",
+};
 
 const delay = (ms: number) => ({ "--delay": `${ms}ms` }) as CSSProperties;
 
@@ -30,17 +33,21 @@ export default function Hero() {
     >
       <div className="container-page grid items-center gap-16 xl:grid-cols-12 xl:gap-12">
         <div className="xl:col-span-7">
-          <p className="eyebrow animate-rise-visible mb-6">AI-accelerated product studio</p>
+          {/* Final hero copy is coming from ZARX; this follows the brief's suggested direction. */}
+          <p className="eyebrow animate-rise-visible mb-6">
+            Business &amp; technology consultancy
+            <DraftTag />
+          </p>
 
           <h1 id="hero-title" className="animate-rise-visible text-display" style={delay(60)}>
-            From idea to reality.
-            <span className="block text-muted">Built to scale.</span>
+            Business growth and technology,
+            <span className="block text-muted">under one roof.</span>
           </h1>
 
-          <p className="animate-rise-visible mt-6 max-w-[36rem] text-lead text-muted" style={delay(140)}>
-            We design, build and launch web, mobile, game, Web3 and AI products for founders and
-            growing businesses. Senior engineers lead every build; AI handles the repetitive work,
-            so you reach a working product sooner. You own every line of code.
+          <p className="animate-rise-visible mt-6 max-w-[38rem] text-lead text-muted" style={delay(140)}>
+            We help brands and founders grow – with digital and influencer marketing, fundraising and
+            brand partnerships – and build the web, mobile, AI and Web3 products behind that growth.
+            Senior people lead every project, and you own everything we make.
           </p>
 
           <div className="animate-rise-visible mt-9 flex flex-col gap-3 sm:flex-row sm:items-center" style={delay(220)}>
@@ -63,40 +70,45 @@ export default function Hero() {
           </ul>
         </div>
 
-        {/* Decorative pipeline; the process section describes the same stages for assistive tech. */}
+        {/* Decorative summary of the two practices; the next section lists them for assistive tech. */}
         <div className="animate-rise xl:col-span-5" style={delay(200)} aria-hidden="true">
           <div className="relative isolate mx-auto max-w-lg xl:max-w-none">
             <div className="absolute -inset-x-6 -inset-y-8 -z-10 rounded-[1.75rem] bg-subtle sm:-inset-x-8" />
             <div className="overflow-hidden rounded-lg border border-line bg-canvas shadow-lg">
               <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
-                <p className="text-sm font-medium">Idea → production</p>
-                <span className="rounded-full border border-line px-2.5 py-0.5 text-xs text-muted">How a build moves</span>
+                <p className="text-sm font-medium">One team, two practices</p>
+                <span className="rounded-full border border-line px-2.5 py-0.5 text-xs text-muted">Grow + Build</span>
               </div>
-              <ol className="relative px-5 py-2">
-                <span className="absolute bottom-7 left-[2.125rem] top-7 w-px bg-line" />
-                <span
-                  className="animate-grow-y absolute bottom-7 left-[2.125rem] top-7 w-px origin-top bg-accent"
-                  style={delay(600)}
-                />
-                {stages.map((stage, i) => (
-                  <li key={stage.title} className="relative flex items-center gap-4 py-3">
-                    <span
-                      className="animate-pop relative flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-accent/30 bg-canvas text-xs font-medium text-accent"
-                      style={delay(600 + i * 180)}
-                    >
-                      {i + 1}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium">{stage.title}</p>
-                      <p className="truncate text-xs text-muted">{stage.detail}</p>
+              <div className="divide-y divide-line">
+                {categories.map((c, ci) => (
+                  <div key={c.key} className="px-5 py-5">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="animate-pop flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-accent/30 bg-canvas text-accent"
+                        style={delay(600 + ci * 420)}
+                      >
+                        <c.icon className="h-4 w-4" strokeWidth={1.75} />
+                      </span>
+                      <div>
+                        <p className="text-sm font-medium">{c.name}</p>
+                        <p className="text-xs text-muted">{c.verb}</p>
+                      </div>
                     </div>
-                    {stage.ai && (
-                      <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-medium text-accent">AI-assisted</span>
-                    )}
-                  </li>
+                    <ul className="mt-4 flex flex-wrap gap-1.5">
+                      {servicesIn(c.key).map((s, i) => (
+                        <li
+                          key={s.slug}
+                          className="animate-pop rounded-full bg-subtle px-2.5 py-1 text-xs font-medium"
+                          style={delay(700 + ci * 420 + i * 70)}
+                        >
+                          {shortNames[s.slug] ?? s.name}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 ))}
-              </ol>
-              <p className="bg-subtle px-5 py-3.5 text-xs text-muted">A senior engineer reviews every AI-assisted step.</p>
+              </div>
+              <p className="bg-subtle px-5 py-3.5 text-xs text-muted">One senior lead coordinates both sides of your project.</p>
             </div>
           </div>
         </div>

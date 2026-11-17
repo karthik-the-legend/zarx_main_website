@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { absoluteUrl } from "@/lib/site";
-import { services } from "@/content/services";
+import { serviceHref, services } from "@/content/services";
+import { categories } from "@/content/categories";
 import { cases } from "@/content/work";
 import { articles } from "@/content/insights";
 
@@ -11,7 +12,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     page("/", 1),
     page("/solutions", 0.9),
-    ...services.map((s) => page(`/services/${s.slug}`, 0.9)),
+    ...categories.map((c) => page(`/services/${c.slug}`, 0.9)),
+    ...services.map((s) => page(serviceHref(s), 0.9)),
     page("/why-zarx", 0.8),
     page("/process", 0.8),
     page("/partners", 0.6),

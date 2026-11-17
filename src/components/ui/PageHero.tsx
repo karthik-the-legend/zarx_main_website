@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { DraftTag } from "@/components/ui/Draft";
 
 export type Crumb = { label: string; href?: string };
 
@@ -12,6 +13,7 @@ export function PageHero({
   lead,
   children,
   after,
+  draft = false,
   className,
 }: {
   crumbs: Crumb[];
@@ -21,6 +23,8 @@ export function PageHero({
   children?: ReactNode;
   /** Shown under the buttons, e.g. proof bullets. */
   after?: ReactNode;
+  /** Marks the page's copy as awaiting sign-off (staging only). */
+  draft?: boolean;
   className?: string;
 }) {
   return (
@@ -56,7 +60,10 @@ export function PageHero({
         </nav>
 
         <div className="max-w-4xl">
-          <p className="eyebrow animate-rise-visible mb-5">{eyebrow}</p>
+          <p className="eyebrow animate-rise-visible mb-5">
+            {eyebrow}
+            {draft && <DraftTag />}
+          </p>
           <h1 id="page-title" className="animate-rise-visible text-page" style={{ "--delay": "60ms" } as React.CSSProperties}>
             {title}
           </h1>

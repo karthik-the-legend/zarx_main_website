@@ -3,9 +3,10 @@ import { Landmark } from "lucide-react";
 import { pageMetadata } from "@/lib/metadata";
 import { clarityLine, governance, investorDisclaimer, marketFacts, partnerWays, thesis } from "@/content/company";
 import { facts } from "@/content/facts";
+import { getService, serviceHref } from "@/content/services";
 import { PageHero, type Crumb } from "@/components/ui/PageHero";
 import { Section, SectionHeading } from "@/components/ui/Section";
-import { ButtonArrow, ButtonLink } from "@/components/ui/Button";
+import { ArrowLink, ButtonArrow, ButtonLink } from "@/components/ui/Button";
 import { JsonLd, breadcrumbLd } from "@/components/ui/JsonLd";
 import { MetricCards } from "@/components/MetricCards";
 import { SimpleForm } from "@/components/SimpleForm";
@@ -38,6 +39,14 @@ export default function PartnersPage() {
         eyebrow="Investors & Partners"
         title="Build the next wave of products with us"
         lead="ZARX funds its own product IP with client work, and every project sharpens the AI-assisted pipeline behind both."
+        after={
+          <p className="text-sm text-muted">
+            This page is about investing in or partnering with ZARX itself. Raising funds or finding sponsors for your own company?{" "}
+            <ArrowLink href={serviceHref(getService("fundraising-sponsorship")!)} className="mt-1 sm:ml-1 sm:mt-0">
+              See Fundraising &amp; Sponsorship Partnerships
+            </ArrowLink>
+          </p>
+        }
       >
         <ButtonLink href="#partner" size="lg" data-cta="partners_become">
           Become a partner

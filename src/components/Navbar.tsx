@@ -3,15 +3,29 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Blocks, BrainCircuit, ChevronDown, Clapperboard, Gamepad2, Globe, Palette } from "lucide-react";
+import {
+  Blocks,
+  BrainCircuit,
+  ChevronDown,
+  Clapperboard,
+  Gamepad2,
+  Globe,
+  HandCoins,
+  Handshake,
+  Megaphone,
+  Palette,
+  Users,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { cta } from "@/lib/cta";
 import { ButtonLink } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
 
 // Icons are mapped here so the menu data passed from the server stays serialisable.
-const icons = { Globe, Gamepad2, Blocks, BrainCircuit, Palette, Clapperboard };
-export type MenuService = { slug: string; name: string; line: string; icon: keyof typeof icons };
+const icons = { Globe, Gamepad2, Blocks, BrainCircuit, Palette, Clapperboard, Megaphone, Users, HandCoins, Handshake };
+export type MenuService = { slug: string; href: string; name: string; line: string; icon: keyof typeof icons };
+/** One practice in the Services menu: its heading links to the category page. */
+export type MenuGroup = { key: string; name: string; href: string; services: MenuService[] };
 
 const about = [
   { label: "Why ZARX", href: "/why-zarx", text: "What makes us different, in writing" },
@@ -22,11 +36,11 @@ const about = [
 type Menu = "services" | "about" | null;
 
 export default function Navbar({
-  services,
+  groups,
   showWork,
   showInsights,
 }: {
-  services: MenuService[];
+  groups: MenuGroup[];
   showWork: boolean;
   showInsights: boolean;
 }) {
@@ -34,8 +48,10 @@ export default function Navbar({
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState<Menu>(null);
+  // Mobile accordion: which practice is expanded.
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
-  const firstLinkRef = useRef<HTMLAnchorElement>(null);
+  const firstLinkRef = useRef<HTMLButtonElement>(null);
   const navRef = useRef<HTMLElement>(null);
 
   // Any completed navigation (including back/forward) closes every menu.
@@ -178,28 +194,45 @@ export default function Navbar({
                 hidden={menu !== "services"}
                 className="absolute inset-x-0 top-full border-b border-line bg-canvas shadow-lg"
               >
-                <div className="container-page py-8">
-                  <ul className="grid grid-cols-3 gap-2">
-                    {services.map((s) => {
-                      const Icon = icons[s.icon];
+                <div className="container-page py-7">
+                  <div className="grid grid-cols-12 gap-8">
+                    {groups.map((g) => {
+                      const wide = g.services.length > 4;
                       return (
-                        <li key={s.slug}>
+                        <div key={g.key} className={wide ? "col-span-8" : "col-span-4"}>
                           <Link
-                            href={`/services/${s.slug}`}
-                            className="group/item flex gap-4 rounded-md p-4 transition-colors hover:bg-subtle"
+                            href={g.href}
+                            aria-current={pathname === g.href || pathname === `${g.href}/` ? "page" : undefined}
+                            className="inline-flex items-center gap-1.5 px-3 text-xs font-semibold uppercase tracking-[0.12em] text-muted transition-colors hover:text-accent"
                           >
-                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border border-line bg-canvas text-ink transition-colors group-hover/item:border-accent/30 group-hover/item:text-accent">
-                              <Icon aria-hidden="true" className="h-5 w-5" strokeWidth={1.5} />
-                            </span>
-                            <span>
-                              <span className="block text-[0.9375rem] font-medium">{s.name}</span>
-                              <span className="mt-0.5 block text-sm leading-snug text-muted">{s.line}</span>
-                            </span>
+                            {g.name}
+                            <span aria-hidden="true">→</span>
                           </Link>
-                        </li>
+                          <ul className={cn("mt-3 grid gap-1", wide ? "grid-cols-2" : "grid-cols-1")}>
+                            {g.services.map((s) => {
+                              const Icon = icons[s.icon];
+                              return (
+                                <li key={s.slug}>
+                                  <Link
+                                    href={s.href}
+                                    className="group/item flex gap-4 rounded-md p-3 transition-colors hover:bg-subtle"
+                                  >
+                                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm border border-line bg-canvas text-ink transition-colors group-hover/item:border-accent/30 group-hover/item:text-accent">
+                                      <Icon aria-hidden="true" className="h-5 w-5" strokeWidth={1.5} />
+                                    </span>
+                                    <span>
+                                      <span className="block text-[0.9375rem] font-medium">{s.name}</span>
+                                      <span className="mt-0.5 block text-sm leading-snug text-muted">{s.line}</span>
+                                    </span>
+                                  </Link>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
                       );
                     })}
-                  </ul>
+                  </div>
                   <div className="mt-4 border-t border-line pt-5 text-sm">
                     <span className="text-muted">Not sure where to start? </span>
                     <Link href="/solutions" className="link-underline font-medium text-accent">
@@ -253,7 +286,11 @@ export default function Navbar({
           <button
             ref={toggleRef}
             type="button"
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => {
+              // Opening expands the practice the visitor is already in.
+              if (!open) setOpenGroup(groups.find((g) => isActive(g.href))?.key ?? null);
+              setOpen((v) => !v);
+            }}
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}
@@ -289,22 +326,59 @@ export default function Navbar({
         <nav aria-label="Mobile" className="container-page flex-1 overflow-y-auto pb-6 pt-2">
           <p className="pb-2 pt-4 text-xs font-semibold uppercase tracking-[0.12em] text-muted">Services</p>
           <ul className="divide-y divide-line border-y border-line">
-            {services.map((s, i) => (
-              <li key={s.slug} className="animate-rise" style={{ "--delay": `${i * 30}ms` } as React.CSSProperties}>
-                <Link
-                  ref={i === 0 ? firstLinkRef : undefined}
-                  href={`/services/${s.slug}`}
-                  onClick={() => setOpen(false)}
-                  className={cn(
-                    "flex items-center justify-between py-3.5 text-lg font-medium tracking-tight",
-                    isActive(`/services/${s.slug}`) ? "text-accent" : "text-ink"
-                  )}
-                >
-                  {s.name}
-                  <span aria-hidden="true" className="text-muted">→</span>
-                </Link>
-              </li>
-            ))}
+            {groups.map((g, i) => {
+              const expanded = openGroup === g.key;
+              return (
+                <li key={g.key} className="animate-rise" style={{ "--delay": `${i * 30}ms` } as React.CSSProperties}>
+                  <button
+                    ref={i === 0 ? firstLinkRef : undefined}
+                    type="button"
+                    aria-expanded={expanded}
+                    aria-controls={`mobile-group-${g.key}`}
+                    onClick={() => setOpenGroup(expanded ? null : g.key)}
+                    className={cn(
+                      "flex w-full items-center justify-between py-3.5 text-left text-lg font-medium tracking-tight",
+                      isActive(g.href) ? "text-accent" : "text-ink"
+                    )}
+                  >
+                    {g.name}
+                    <ChevronDown
+                      aria-hidden="true"
+                      className={cn("h-5 w-5 shrink-0 text-muted transition-transform duration-base", expanded && "rotate-180")}
+                      strokeWidth={1.75}
+                    />
+                  </button>
+                  {/* Class, not the `hidden` attribute, for the same reason as the menu itself. */}
+                  <ul id={`mobile-group-${g.key}`} className={cn("pb-3", expanded ? "block" : "hidden")}>
+                    <li>
+                      <Link
+                        href={g.href}
+                        onClick={() => setOpen(false)}
+                        className="block py-2.5 pl-4 text-[0.9375rem] font-medium text-accent"
+                      >
+                        {g.name} overview →
+                      </Link>
+                    </li>
+                    {g.services.map((s) => (
+                      <li key={s.slug}>
+                        <Link
+                          href={s.href}
+                          onClick={() => setOpen(false)}
+                          aria-current={isActive(s.href) ? "page" : undefined}
+                          className={cn(
+                            "flex items-center justify-between gap-4 py-2.5 pl-4 text-base font-medium",
+                            isActive(s.href) ? "text-accent" : "text-ink"
+                          )}
+                        >
+                          {s.name}
+                          <span aria-hidden="true" className="text-muted">→</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              );
+            })}
             <li>
               <Link href="/solutions" onClick={() => setOpen(false)} className="block py-3.5 text-[0.9375rem] font-medium text-accent">
                 Not sure where to start? See Solutions

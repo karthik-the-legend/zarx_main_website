@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { DraftTag } from "@/components/ui/Draft";
 
 type Tone = "default" | "subtle" | "dark";
 
@@ -40,6 +41,7 @@ export function SectionHeading({
   description,
   align = "split",
   tone = "default",
+  draft = false,
   className,
 }: {
   id: string;
@@ -49,6 +51,8 @@ export function SectionHeading({
   /** "split" puts the description beside the title on large screens. */
   align?: "split" | "start" | "center";
   tone?: Tone;
+  /** Marks the section's copy as awaiting sign-off (staging only). */
+  draft?: boolean;
   className?: string;
 }) {
   const mutedText = tone === "dark" ? "text-night-muted" : "text-muted";
@@ -64,7 +68,10 @@ export function SectionHeading({
       )}
     >
       <div className={cn(align === "split" && "lg:col-span-7")}>
-        <p className="eyebrow mb-4">{eyebrow}</p>
+        <p className="eyebrow mb-4">
+          {eyebrow}
+          {draft && <DraftTag />}
+        </p>
         <h2 id={id} className="text-h2">
           {title}
         </h2>

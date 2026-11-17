@@ -2,20 +2,22 @@ import type { CSSProperties } from "react";
 import { Ban, Wrench } from "lucide-react";
 import { pageMetadata } from "@/lib/metadata";
 import { cta, secondaryCta } from "@/lib/cta";
-import { commitments, comparison, principles, reasons, tools, whyFaqs, wontDo } from "@/content/company";
+import { businessCommitments, businessWontDo, commitments, comparison, principles, reasons, tools, whyFaqs, wontDo } from "@/content/company";
+import { categories } from "@/content/categories";
 import { PageHero, type Crumb } from "@/components/ui/PageHero";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { ButtonArrow, ButtonLink } from "@/components/ui/Button";
 import { CheckList } from "@/components/ui/Lists";
+import { DraftTag } from "@/components/ui/Draft";
 import { JsonLd, breadcrumbLd } from "@/components/ui/JsonLd";
 import { AudienceCards } from "@/components/AudienceCards";
 import { FaqSection } from "@/components/FaqSection";
 import CTABanner from "@/components/CTABanner";
 
 export const metadata = pageMetadata({
-  title: "Why Founders Choose ZARX | AI-Accelerated Studio",
+  title: "Why ZARX | Business & Technology Consultancy",
   description:
-    "Senior engineers, AI-assisted delivery, game-studio design quality and 100% IP ownership – and the written commitments we stand behind.",
+    "One team for growth and technology: senior specialists, reporting you can check, AI-assisted delivery and full ownership – plus the commitments we put in writing.",
   path: "/why-zarx",
   image: "/og/why-zarx.png",
 });
@@ -29,8 +31,9 @@ export default function WhyZarxPage() {
       <PageHero
         crumbs={crumbs}
         eyebrow="Why ZARX"
-        title="Big-studio quality. Startup speed. Your IP."
-        lead="You get senior engineers and designers who move fast because AI handles the repetitive work – and you own everything we build."
+        title="Senior people. Clear numbers. Everything in your name."
+        lead="You get senior marketers, partnership leads, engineers and designers who move fast – with goals agreed up front, AI handling the repetitive work, and every account, contract and line of code owned by you."
+        draft
       >
         <ButtonLink href={cta.book.href} size="lg" data-cta="why_book">
           {cta.book.label}
@@ -42,7 +45,7 @@ export default function WhyZarxPage() {
       </PageHero>
 
       <Section labelledBy="reasons-title">
-        <SectionHeading id="reasons-title" eyebrow="What makes us different" title="Six reasons founders choose us" />
+        <SectionHeading id="reasons-title" eyebrow="What makes us different" title="Nine reasons teams choose us" draft />
         <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {reasons.map((r, i) => (
             <li
@@ -74,7 +77,7 @@ export default function WhyZarxPage() {
           id="compare-title"
           eyebrow="Honest comparison"
           title="How we compare"
-          description="Every option has strengths. Here's where each one fits."
+          description="Every option has strengths. Here's where each one fits for a technology project."
         />
         <div data-reveal className="overflow-x-auto rounded-lg border border-line bg-canvas" tabIndex={0} role="region" aria-label="Comparison of ZARX, freelancers, a large agency and hiring in-house">
           <table className="w-full min-w-[48rem] text-left text-sm">
@@ -106,7 +109,17 @@ export default function WhyZarxPage() {
 
       <Section labelledBy="serve-title">
         <SectionHeading id="serve-title" eyebrow="Who we serve" title="Built for teams that need to move" />
-        <AudienceCards showTypical />
+        <div className="space-y-12">
+          {categories.map((c) => (
+            <div key={c.key}>
+              <h3 data-reveal className="mb-6 text-sm font-semibold uppercase tracking-[0.12em] text-muted">
+                {c.verb} · {c.name}
+                {c.draft && <DraftTag />}
+              </h3>
+              <AudienceCards category={c.key} showTypical />
+            </div>
+          ))}
+        </div>
       </Section>
 
       <Section tone="dark" labelledBy="commit-title">
@@ -116,8 +129,18 @@ export default function WhyZarxPage() {
             <h2 id="commit-title" className="text-h2">Promises we put in the contract</h2>
             <p className="mt-5 text-lead text-night-muted">Not a sales pitch – clauses you can hold us to.</p>
           </header>
-          <div data-reveal className="lg:col-span-7">
-            <CheckList items={commitments} tone="dark" className="grid gap-x-10 gap-y-4 space-y-0 sm:grid-cols-2" />
+          <div data-reveal className="space-y-10 lg:col-span-7">
+            <div>
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-night-muted">Technology projects</h3>
+              <CheckList items={commitments} tone="dark" className="grid gap-x-10 gap-y-4 space-y-0 sm:grid-cols-2" />
+            </div>
+            <div>
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-[0.12em] text-night-muted">
+                Business engagements
+                <DraftTag />
+              </h3>
+              <CheckList items={businessCommitments} tone="dark" className="grid gap-x-10 gap-y-4 space-y-0 sm:grid-cols-2" />
+            </div>
           </div>
         </div>
       </Section>
@@ -129,10 +152,13 @@ export default function WhyZarxPage() {
             <h2 id="wont-title" className="text-h2">What we won&apos;t do</h2>
           </header>
           <ul data-reveal className="space-y-4 lg:col-span-7">
-            {wontDo.map((w) => (
+            {[...wontDo.map((w) => ({ w, draft: false })), ...businessWontDo.map((w) => ({ w, draft: true }))].map(({ w, draft }) => (
               <li key={w} className="flex gap-3 text-[1.0625rem] leading-relaxed">
                 <Ban aria-hidden="true" className="mt-1 h-5 w-5 shrink-0 text-danger" strokeWidth={1.75} />
-                {w}
+                <span>
+                  {w}
+                  {draft && <DraftTag />}
+                </span>
               </li>
             ))}
           </ul>
