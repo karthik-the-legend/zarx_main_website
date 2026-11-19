@@ -34,7 +34,7 @@ export default function ContactPage() {
   const ways = [
     { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}` },
     facts.whatsapp && { icon: MessageCircle, label: "WhatsApp", value: "Chat with us", href: `https://wa.me/${facts.whatsapp}` },
-    facts.phone && { icon: Phone, label: "Phone (Mon–Fri, 10:00–19:00 IST)", value: facts.phone, href: `tel:${facts.phone.replace(/\s/g, "")}` },
+    facts.phone && { icon: Phone, label: "Call back (Mon–Fri, 10:00–19:00 IST)", value: facts.phone, href: `tel:${facts.phone.replace(/\s/g, "")}` },
     {
       icon: MapPin,
       label: facts.registeredOffice ? "Office (visits by appointment)" : "Location",

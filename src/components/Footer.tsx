@@ -62,7 +62,7 @@ export default function Footer() {
   ];
   const contact: FooterLink[] = [
     { label: site.email, href: `mailto:${site.email}`, external: true },
-    ...(facts.phone ? [{ label: facts.phone, href: `tel:${facts.phone.replace(/\s/g, "")}`, external: true }] : []),
+    ...(facts.phone ? [{ label: `Call back: ${facts.phone}`, href: `tel:${facts.phone.replace(/\s/g, "")}`, external: true }] : []),
     ...(facts.whatsapp ? [{ label: "WhatsApp", href: `https://wa.me/${facts.whatsapp}`, external: true }] : []),
     { label: `${site.location.city}, ${site.location.country}`, href: "/contact" },
     { label: cta.book.short, href: cta.book.href },

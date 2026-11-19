@@ -15,8 +15,8 @@ export const facts = {
   /* ── Contact & booking ─────────────────────────────────────────── */
   /** Cal.com / Calendly link for "Book a free 30-minute call". */
   bookingUrl: null as string | null,
-  /** Displayed phone number, e.g. "+91 98765 43210" (Mon–Fri, 10:00–19:00 IST). */
-  phone: "+91 70220 77516" as string | null,
+  /** Call-back number, e.g. "+91 98765 43210" (Mon–Fri, 10:00–19:00 IST). */
+  phone: "+91 98440 27670" as string | null,
   /** WhatsApp number in international format, digits only, e.g. "919876543210". */
   whatsapp: "917022077516" as string | null,
   /** Registered office address (shown in the footer, contact page and facts box). */
